@@ -1,0 +1,35 @@
+{
+  "name": "web-minecraft",
+  "version": "1.0.0",
+  "description": "web minecraft",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/junqiuzhang/web-minecraft.git"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.5",
+    "@babel/preset-env": "^7.4.5",
+    "@babel/runtime": "^7.4.5",
+    "@types/node": "^12.0.10",
+    "babel-loader": "^8.0.6",
+    "cross-env": "^5.2.0",
+    "css-loader": "^2.1.1",
+    "html-webpack-plugin": "^3.2.0",
+    "style-loader": "^0.23.1",
+    "typescript": "^3.5.2",
+    "url-loader": "^1.1.2",
+    "webpack": "4.x.x",
+    "webpack-cli": "^3.3.5",
+    "webpack-dev-server": "^3.7.2"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/junqiuzhang/web-minecraft/issues"
+  },
+  "homepage": "https://github.com/junqiuzhang/web-minecraft#readme"
+}
