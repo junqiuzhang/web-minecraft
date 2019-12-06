@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import { MouseMoveWaitTime } from '../setting';
+import { throttle } from '../utils';
 interface IMouseMove {
   scene: THREE.Scene;
   camera: THREE.Camera;
@@ -16,16 +17,9 @@ function mouseMove({
   scene,
   camera
 }: IMouseMove) {
-  let pre = Date.now();
   function handleMouseMove(this: HTMLElement, event: MouseEvent) {
-    let now = Date.now();
-    if (now - pre > MouseMoveWaitTime) {
-      const res = calcMouseMove(event);
-
-      pre = now;
-      return;
-    }
+    calcMouseMove(event);
   }
-  return handleMouseMove;
+  return throttle(handleMouseMove, MouseMoveWaitTime);
 }
 export default mouseMove;
