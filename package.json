@@ -15,11 +15,13 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/runtime": "^7.4.5",
     "@types/node": "^12.0.10",
+    "@types/three": "^0.103.2",
     "babel-loader": "^8.0.6",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
     "html-webpack-plugin": "^3.2.0",
     "style-loader": "^0.23.1",
+    "ts-loader": "^6.2.1",
     "typescript": "^3.5.2",
     "url-loader": "^1.1.2",
     "webpack": "4.x.x",
@@ -31,5 +33,8 @@
   "bugs": {
     "url": "https://github.com/junqiuzhang/web-minecraft/issues"
   },
-  "homepage": "https://github.com/junqiuzhang/web-minecraft#readme"
+  "homepage": "https://github.com/junqiuzhang/web-minecraft#readme",
+  "dependencies": {
+    "three": "^0.111.0"
+  }
 }

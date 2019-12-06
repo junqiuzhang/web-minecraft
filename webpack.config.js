@@ -1,7 +1,7 @@
 const path = require('path');
 const HtmlWebPackPlugin = require('html-webpack-plugin');
 module.exports = {
-  entry: './src/index.js',
+  entry: './src/index.ts',
   output: { 
     path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js'
@@ -10,14 +10,13 @@ module.exports = {
     host: '0.0.0.0',
     port: 3000,
     hot: true,
-    noInfo: true,
     compress: true,
     disableHostCheck: true,
   },
   module: {
     rules: [
       {
-        test: /\.m?js$/,
+        test: /\.js$/,
         include: [
           path.resolve(__dirname, 'src'),
         ],
@@ -29,13 +28,23 @@ module.exports = {
         }
       },
       {
+        test: /\.ts$/,
+        include: [
+          path.resolve(__dirname, 'src'),
+        ],
+        use: {
+          loader: 'ts-loader',
+          options: {}
+        }
+      },
+      {
         test: /\.css$/,
         use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(jpg|png|svg|gif)$/,
-        exclude: [
-          path.resolve(__dirname, 'node_modules')
+        include: [
+          path.resolve(__dirname, 'src'),
         ],
         use: ['url-loader']
       }
@@ -52,6 +61,7 @@ module.exports = {
     timings: true
   },
   resolve: {
+    extensions: ['.ts', '.js'],
     unsafeCache: true,
   },
   mode: 'development', 
