@@ -8,8 +8,8 @@ function engine({
   scene,
   camera
 }: IEngine) {
-  const cube = new Cube()
+  const cube = new Cube();
+  cube.position.z = -5;
   scene.add(cube);
-  camera.position.z = 5;
 }
 export default engine;
