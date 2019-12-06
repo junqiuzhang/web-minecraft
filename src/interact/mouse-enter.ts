@@ -8,9 +8,9 @@ function mouseEnter({
   camera
 }: IMouseEnter) {
   function handleMouseEnter(this: HTMLElement, event: MouseEvent) {
-    window.InitMousePosition = {
-      x: event.clientX,
-      y: event.clientY
+    window.initMousePosition = {
+      initX: event.clientX,
+      initY: event.clientY
     }
   }
   return handleMouseEnter;

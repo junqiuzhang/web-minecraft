@@ -1,3 +1,6 @@
 export interface IWindow { 
-  InitMousePosition: any; 
+  initMousePosition: {
+    initX: number;
+    initY: number;
+  }; 
 }
