@@ -1,6 +1,9 @@
 import * as THREE from 'three';
 export interface IWindow { 
-  mousePosition: THREE.Vector2;
+  mouse: {
+    clickFlag: boolean;
+    position: THREE.Vector2;
+  };
 }
 export interface ICommonParam {
   scene: THREE.Scene;
