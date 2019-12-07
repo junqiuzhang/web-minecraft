@@ -1,17 +1,12 @@
 import * as THREE from 'three';
-interface IMouseEnter {
-  scene: THREE.Scene;
-  camera: THREE.Camera;
-}
+import { IInteract } from './index';
 function mouseEnter({
   scene,
   camera
-}: IMouseEnter) {
+}: IInteract) {
   function handleMouseEnter(this: HTMLElement, event: MouseEvent) {
-    window.initMousePosition = {
-      initX: event.clientX,
-      initY: event.clientY
-    }
+    const { clientX, clientY } = event;
+    window.initMousePosition = new THREE.Vector2(clientX, clientY);
   }
   return handleMouseEnter;
 }

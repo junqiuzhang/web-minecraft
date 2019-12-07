@@ -1,7 +1,6 @@
 import * as THREE from 'three';
-interface IRender {
-  scene: THREE.Scene;
-  camera: THREE.Camera;
+import { ICommonParam } from '../interface';
+interface IRender extends ICommonParam {
   renderer: THREE.Renderer;
 }
 function renderLoop({
