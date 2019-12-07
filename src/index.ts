@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import engine from './engine';
+import Engine from './engine';
 import render from './render';
 import interact from './interact';
 import init from './setting';
@@ -16,10 +16,10 @@ function entry() {
   // 初始化
   init({ scene, camera, renderer });
   // 引擎
-  engine({ scene, camera });
+  const engine = new Engine({ scene, camera });
   // 渲染
   render({ scene, camera, renderer });
   // 交互
-  interact({ scene, camera });
+  interact({ scene, camera, engine });
 }
 entry();
