@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as OrbitControls from 'three-orbitcontrols';
+import light from './light';
 import ground from '../setting/ground';
 import { ICommonParam } from '../interface'
 import { Origin } from '../constant';
@@ -14,7 +15,7 @@ export default function initSetting({
   // 背景色
   scene.background = new THREE.Color(0xcce0ff);
   // 背景雾化
-  scene.fog = new THREE.Fog(0xcce0ff, 500, 10000);
+  scene.fog = new THREE.Fog(0xcce0ff, 20, 100);
   // 摄像机位置
   camera.position.set(0, 0, 0.001);
   // 摄像机角度
@@ -26,9 +27,10 @@ export default function initSetting({
   // 视角控制
   const controls = new OrbitControls(camera, renderer.domElement);
   controls.update();
+  // 光线设置
+  light({ scene, camera });
   // 大地设置
   ground({ scene, camera });
   // 参数初始化
-  window.initMousePosition = new THREE.Vector2(0, 0);
-  window.initCameraDirection = new THREE.Vector3(0, 0, -1);
+  window.mousePosition = new THREE.Vector2(0, 0);
 }
