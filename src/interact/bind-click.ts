@@ -45,7 +45,6 @@ function handleMouseUp({
       raycaster.setFromCamera(mousePosition, camera);
       intersects = raycaster.intersectObjects(scene.children);
       if (intersects.length > 0) {
-        console.log(intersects[0].point);
         engine.onClick({
           position: intersects[0].point,
           target: intersects[0].object

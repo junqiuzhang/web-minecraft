@@ -29,7 +29,4 @@ export default function initSetting({
   // 大地设置
   ground({ scene, camera });
   // 参数初始化
-  window.mouse = {
-    position: new THREE.Vector2(0, 0)
-  }
 }
