@@ -2,30 +2,25 @@ import * as THREE from 'three';
 import mouseUp from './mouse-up';
 import mouseMove from './mouse-move';
 import mouseDown from './mouse-down';
-import { ICommonParam } from '../interface';
 import Engine from '../engine';
-export interface IInteract extends ICommonParam {
-  engine: Engine;
-}
+import { ICommonParam } from '../interface';
+export interface IInteract extends ICommonParam {}
 function interact({
   scene,
-  camera,
-  engine
+  camera
 }: IInteract) {
+  const engine = new Engine({ scene, camera });
   document.body.addEventListener('mousedown', mouseDown({
     scene,
-    camera,
-    engine
+    camera
   }));
   document.body.addEventListener('mousemove', mouseMove({
     scene,
-    camera,
-    engine
+    camera
   }));
   document.body.addEventListener('mouseup', mouseUp({
     scene,
-    camera,
-    engine
+    camera
   }));
 }
 export default interact;

@@ -13,13 +13,11 @@ function entry() {
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(Fov, window.innerWidth / window.innerHeight, Near, Far);
   const renderer = new THREE.WebGLRenderer();
-  // 初始化
+  // 首次渲染
   init({ scene, camera, renderer });
-  // 引擎
-  const engine = new Engine({ scene, camera });
   // 渲染
   render({ scene, camera, renderer });
   // 交互
-  interact({ scene, camera, engine });
+  interact({ scene, camera });
 }
 entry();

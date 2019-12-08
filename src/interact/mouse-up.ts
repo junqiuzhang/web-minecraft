@@ -2,8 +2,7 @@ import * as THREE from 'three';
 import { IInteract } from './index';
 function mouseUp({
   scene,
-  camera,
-  engine
+  camera
 }: IInteract) {
   let raycaster = new THREE.Raycaster();
   let intersects = raycaster.intersectObjects(scene.children);
