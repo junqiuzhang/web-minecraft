@@ -7,6 +7,10 @@ interface IClickParam {
   position: THREE.Vector3;
   target: THREE.Object3D;
 }
+interface IHoverParam {
+  position: THREE.Vector3;
+  target: THREE.Mesh;
+}
 class engine {
   private scene: THREE.Scene;
   private camera: THREE.Camera;
@@ -20,9 +24,12 @@ class engine {
   onClick({ position, target }: IClickParam) {
     const cube = new Cube();
     cube.position.x = round(position.x);
-    cube.position.y = position.y + 0.5;
+    cube.position.y = round(position.y);
     cube.position.z = round(position.z);
     this.scene.add(cube);
+  }
+  onHover({ position, target }: IHoverParam) {
+
   }
 }
 export default engine;
