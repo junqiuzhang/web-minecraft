@@ -9,8 +9,7 @@ interface IClickParam {
   target: THREE.Object3D;
 }
 interface IHoverParam {
-  position: THREE.Vector3;
-  target: THREE.Object3D;
+  intersect?: THREE.Intersection;
 }
 interface IState {
   hoverTarget: THREE.Object3D;
@@ -20,6 +19,7 @@ class engine {
   private scene: THREE.Scene;
   private camera: THREE.Camera;
   private state: IState;
+  private rollOverMesh: THREE.Mesh;
   constructor({
     scene,
     camera
@@ -30,6 +30,14 @@ class engine {
       hoverTarget: new THREE.Object3D(),
       hoverTargetHex: new THREE.Color()
     }
+    this._mountRollOverMesh();
+  }
+  _mountRollOverMesh() {
+    const rollOverGeo = new THREE.BoxBufferGeometry( 1, 1, 1 );
+    const rollOverMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.5, transparent: true } );
+    const rollOverMesh = new THREE.Mesh( rollOverGeo, rollOverMaterial );
+    this.rollOverMesh = rollOverMesh;
+    this.scene.add( rollOverMesh );
   }
   onClick({ position, target }: IClickParam) {
     const cube = new Cube();
@@ -38,23 +46,17 @@ class engine {
     cube.position.z = round(position.z);
     this.scene.add(cube);
   }
-  onHover({ position, target }: IHoverParam) {
-    if (target != this.state.hoverTarget) {
-      if (this.state.hoverTarget instanceof THREE.Mesh) {
-        this.state.hoverTarget.material.emissive.setHex(this.state.hoverTargetHex);
-      }
-      if (target instanceof THREE.Mesh) {
-        target.material.emissive.setHex(0xff0000);
-      }
-      this.state.hoverTarget = target;
-      this.state.hoverTargetHex = target.material.emissive.getHex();
+  onHover({ intersect }: IHoverParam) {
+    if (intersect && intersect.point && intersect.face) {
+      // this.rollOverMesh.position.x = round(intersect.point.x);
+      // this.rollOverMesh.position.y = round(intersect.point.y);
+      // this.rollOverMesh.position.z = round(intersect.point.z);
+      this.rollOverMesh.position.copy( intersect.point ).add( intersect.face.normal );
+      this.rollOverMesh.position.divideScalar( 1 ).floor().multiplyScalar( 1 ).addScalar( 0.5 );
     }
   }
-  onHoverClear({ position, target }: IHoverParam) {
-    if (this.state.hoverTarget instanceof THREE.Mesh) {
-      this.state.hoverTarget.material.emissive.setHex(this.state.hoverTargetHex);
-    }
-    this.state.hoverTarget = null;
+  onHoverClear({ intersect }: IHoverParam) {
+
   }
 }
 export default engine;

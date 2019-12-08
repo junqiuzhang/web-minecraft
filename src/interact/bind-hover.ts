@@ -20,14 +20,10 @@ function handleMouseMove({
     intersects = raycaster.intersectObjects(scene.children);
     if (intersects.length > 0) {
       engine.onHover({
-        position: intersects[0].point,
-        target: intersects[0].object
+        intersect: intersects[0]
       });
     } else {
-      engine.onHoverClear({
-        position: intersects[0].point,
-        target: intersects[0].object
-      })
+      // engine.onHoverClear({})
     }
   }, MouseMoveWaitTime)
 }
