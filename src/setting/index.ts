@@ -2,9 +2,7 @@ import * as THREE from 'three';
 import light from './light';
 import ground from '../setting/ground';
 import { ICommonParam } from '../interface'
-interface ISetting extends ICommonParam {
-  renderer: THREE.Renderer;
-}
+interface ISetting extends ICommonParam {}
 export default function initSetting({
   scene,
   camera,
@@ -23,8 +21,8 @@ export default function initSetting({
   // 渲染器挂载
   document.body.appendChild(renderer.domElement);
   // 光线设置
-  light({ scene, camera });
+  light({ scene, camera, renderer });
   // 大地设置
-  ground({ scene, camera });
+  ground({ scene, camera, renderer });
   // 参数初始化
 }
