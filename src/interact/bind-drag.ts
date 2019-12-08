@@ -46,7 +46,7 @@ function handleMouseUp({
     }
   }
 }
-function bindHandleClick({
+function bindHandleDrag({
   scene,
   camera,
   engine
@@ -67,4 +67,4 @@ function bindHandleClick({
     engine
   }));
 }
-export default bindHandleClick;
+export default bindHandleDrag;

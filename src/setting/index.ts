@@ -3,7 +3,7 @@ import * as OrbitControls from 'three-orbitcontrols';
 import light from './light';
 import ground from '../setting/ground';
 import { ICommonParam } from '../interface'
-import { Origin } from '../constant';
+import { Near, Origin } from '../constant';
 interface ISetting extends ICommonParam {
   renderer: THREE.Renderer;
 }
@@ -17,9 +17,9 @@ export default function initSetting({
   // 背景雾化
   scene.fog = new THREE.Fog(0xcce0ff, 20, 100);
   // 摄像机位置
-  camera.position.set(0, 0, 0.001);
+  camera.position.set(0, 0, 0);
   // 摄像机角度
-  camera.lookAt(Origin);
+  camera.lookAt(0, 0, -1);
   // 渲染器尺寸
   renderer.setSize(window.innerWidth, window.innerHeight);
   // 渲染器挂载
