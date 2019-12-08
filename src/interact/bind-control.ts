@@ -1,4 +1,4 @@
-import { PointerLockControls } from '../controls/point-lock-control';
+import { PointerLockControls } from 'three/examples/jsm/controls/PointerLockControls';
 import { IInteract } from './index';
 function bindControl({
   scene,
