@@ -18,11 +18,16 @@ function handleMouseMove({
     const mousePosition = new THREE.Vector2((event.clientX / window.innerWidth) * 2 - 1, - (event.clientY / window.innerHeight) * 2 + 1);
     raycaster.setFromCamera(mousePosition, camera);
     intersects = raycaster.intersectObjects(scene.children);
-    if (intersects.length > 0 && intersects[0].object instanceof THREE.Mesh) {
+    if (intersects.length > 0) {
       engine.onHover({
         position: intersects[0].point,
         target: intersects[0].object
       });
+    } else {
+      engine.onHoverClear({
+        position: intersects[0].point,
+        target: intersects[0].object
+      })
     }
   }, MouseMoveWaitTime)
 }
