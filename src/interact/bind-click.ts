@@ -5,26 +5,22 @@ import { IInteract } from './index';
 import Engine from '../engine';
 interface IBindClick extends IInteract {
   engine: Engine;
-  clickOption?: {
+}
+interface IHandleClick extends IBindClick {
+  clickOption: {
     flag: boolean;
   }
 }
 function handleMouseDown({
-  scene,
-  camera,
-  engine,
   clickOption
-}: IBindClick) {
+}: IHandleClick) {
   return function (this: HTMLElement, event: MouseEvent) {
     clickOption.flag = true;
   };
 }
 function handleMouseMove({
-  scene,
-  camera,
-  engine,
   clickOption
-}: IBindClick) {
+}: IHandleClick) {
   return throttle(function (this: HTMLElement, event: MouseEvent) {
     if (clickOption.flag) {
       clickOption.flag = false;
@@ -36,7 +32,7 @@ function handleMouseUp({
   camera,
   engine,
   clickOption
-}: IBindClick) {
+}: IHandleClick) {
   let raycaster = new THREE.Raycaster();
   let intersects = raycaster.intersectObjects(scene.children);
   return function (this: HTMLElement, event: MouseEvent) {
@@ -56,6 +52,7 @@ function handleMouseUp({
 function bindHandleClick({
   scene,
   camera,
+  renderer,
   engine
 }: IBindClick) {
   let clickOption = {
@@ -64,18 +61,21 @@ function bindHandleClick({
   document.body.addEventListener('mousedown', handleMouseDown({
     scene,
     camera,
+    renderer,
     engine,
     clickOption
   }));
   document.body.addEventListener('mousemove', handleMouseMove({
     scene,
     camera,
+    renderer,
     engine,
     clickOption
   }));
   document.body.addEventListener('mouseup', handleMouseUp({
     scene,
     camera,
+    renderer,
     engine,
     clickOption
   }));

@@ -18,6 +18,6 @@ function entry() {
   // 渲染
   render({ scene, camera, renderer });
   // 交互
-  interact({ scene, camera });
+  interact({ scene, camera, renderer });
 }
 entry();

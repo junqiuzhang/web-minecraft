@@ -36,6 +36,6 @@
   "homepage": "https://github.com/junqiuzhang/web-minecraft#readme",
   "dependencies": {
     "three": "^0.111.0",
-    "three-orbitcontrols": "^2.110.1"
+    "three-pointer-lock-controls": "^1.0.0"
   }
 }

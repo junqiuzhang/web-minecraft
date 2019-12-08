@@ -1,22 +1,26 @@
 import * as THREE from 'three';
+import bindControl from './bind-control';
 import bindClick from './bind-click';
-import bindDrag from './bind-drag';
 import Engine from '../engine';
 import { ICommonParam } from '../interface';
-export interface IInteract extends ICommonParam {}
+export interface IInteract extends ICommonParam {
+  renderer: THREE.Renderer;
+}
 function interact({
   scene,
-  camera
+  camera,
+  renderer
 }: IInteract) {
   const engine = new Engine({ scene, camera });
+  bindControl({
+    scene,
+    camera,
+    renderer
+  })
   bindClick({
     scene,
     camera,
-    engine
-  })
-  bindDrag({
-    scene,
-    camera,
+    renderer,
     engine
   })
 }

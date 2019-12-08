@@ -1,9 +1,7 @@
 import * as THREE from 'three';
-import * as OrbitControls from 'three-orbitcontrols';
 import light from './light';
 import ground from '../setting/ground';
 import { ICommonParam } from '../interface'
-import { Near, Origin } from '../constant';
 interface ISetting extends ICommonParam {
   renderer: THREE.Renderer;
 }
