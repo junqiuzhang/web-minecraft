@@ -4,7 +4,7 @@ function ground({
   scene,
   camera
 }: ICommonParam) {
-  const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2000, 2000), new THREE.MeshPhongMaterial({ color: 0x999999, depthWrite: false }));
+  const mesh = new THREE.Mesh(new THREE.PlaneBufferGeometry(2000, 2000), new THREE.MeshPhongMaterial({ color: 0xffffff, depthWrite: false }));
   mesh.rotation.x = - Math.PI / 2;
   mesh.position.y = - 2;
   scene.add(mesh);

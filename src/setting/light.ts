@@ -4,11 +4,12 @@ function light({
   scene,
   camera
 }: ICommonParam) {
-  const pointLight = new THREE.PointLight(0xffffff, 1000, 1000, 0.1);
-  pointLight.position.set(0, 100, 0);
-  const hemiLight = new THREE.HemisphereLight(0xddeeff, 0x999999, 0.1);
+  const pointLight = new THREE.PointLight(0xffffff, 1, 1000, 0.1);
+  pointLight.position.set(100, 100, 0);
+  scene.add(pointLight);
+  const hemiLight = new THREE.HemisphereLight(0xcce0ff, 0x000000, 0.1);
   scene.add(hemiLight);
-  const ambiLight = new THREE.AmbientLight(0x404040);
+  const ambiLight = new THREE.AmbientLight(0xffffff, 0.5);
   scene.add(ambiLight);
 }
 export default light;

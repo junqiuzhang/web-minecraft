@@ -15,9 +15,9 @@ export default function initSetting({
   // 背景雾化
   scene.fog = new THREE.Fog(0xcce0ff, 20, 100);
   // 摄像机位置
-  camera.position.set(0, 0, 0);
+  camera.position.set(0.5, 0, 0.5);
   // 摄像机角度
-  camera.lookAt(0, 0, -1);
+  camera.lookAt(0.5, 0, -0.5);
   // 渲染器尺寸
   renderer.setSize(window.innerWidth, window.innerHeight);
   // 渲染器挂载
