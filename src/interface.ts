@@ -1,7 +1,6 @@
 import * as THREE from 'three';
 export interface IWindow { 
   mouse: {
-    clickFlag: boolean;
     position: THREE.Vector2;
   };
 }

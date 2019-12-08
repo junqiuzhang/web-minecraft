@@ -24,16 +24,12 @@ export default function initSetting({
   renderer.setSize(window.innerWidth, window.innerHeight);
   // 渲染器挂载
   document.body.appendChild(renderer.domElement);
-  // 视角控制
-  const controls = new OrbitControls(camera, renderer.domElement);
-  controls.update();
   // 光线设置
   light({ scene, camera });
   // 大地设置
   ground({ scene, camera });
   // 参数初始化
   window.mouse = {
-    clickFlag: false,
     position: new THREE.Vector2(0, 0)
   }
 }
