@@ -51,8 +51,5 @@ class engine {
       this.rollOverMesh.position.divideScalar( 1 ).floor().multiplyScalar( 1 ).addScalar( 0.5 );
     }
   }
-  onHoverClear({ intersect }: IHoverParam) {
-
-  }
 }
 export default engine;

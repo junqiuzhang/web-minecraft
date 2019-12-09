@@ -22,8 +22,6 @@ function handleMouseMove({
       engine.onHover({
         intersect: intersects[0]
       });
-    } else {
-      // engine.onHoverClear({})
     }
   }, MouseMoveWaitTime)
 }
