@@ -2,10 +2,7 @@ import * as THREE from 'three';
 import { MouseMoveWaitTime } from '../constant';
 import { throttle } from '../utils';
 import { IInteract } from './index';
-import Engine from '../engine';
-interface IBindClick extends IInteract {
-  engine: Engine;
-}
+interface IBindClick extends IInteract {}
 interface IHandleClick extends IBindClick {
   clickOption: {
     flag: boolean;
