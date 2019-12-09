@@ -50,13 +50,10 @@ class engine {
     this.scene.add(cube);
   }
   onHover({ intersect }: IFuncParam) {
-    if (intersect && intersect.point && intersect.face) {
-      // this.rollOverMesh.position.x = round(intersect.point.x);
-      // this.rollOverMesh.position.y = round(intersect.point.y);
-      // this.rollOverMesh.position.z = round(intersect.point.z);
-      this.rollOverMesh.position.copy( intersect.point ).add( intersect.face.normal );
-      this.rollOverMesh.position.divideScalar( 1 ).floor().multiplyScalar( 1 ).addScalar( 0.5 );
-    }
+    const { point } = intersect;
+    this.rollOverMesh.position.x = round(point.x);
+    this.rollOverMesh.position.y = round(point.y);
+    this.rollOverMesh.position.z = round(point.z);
   }
 }
 export default engine;
