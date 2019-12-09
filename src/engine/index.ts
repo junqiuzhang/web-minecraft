@@ -4,11 +4,7 @@ import Cube from '../geometry/cube';
 import { ICommonParam } from '../interface';
 import { round } from '../utils';
 interface IEngine extends ICommonParam { }
-interface IClickParam {
-  position: THREE.Vector3;
-  target: THREE.Object3D;
-}
-interface IHoverParam {
+interface IFuncParam {
   intersect?: THREE.Intersection;
 }
 interface IState {
@@ -39,14 +35,14 @@ class engine {
     this.rollOverMesh = rollOverMesh;
     this.scene.add( rollOverMesh );
   }
-  onClick({ position, target }: IClickParam) {
+  onClick({ intersect }: IFuncParam) {
     const cube = new Cube();
     cube.position.x = round(position.x);
     cube.position.y = round(position.y);
     cube.position.z = round(position.z);
     this.scene.add(cube);
   }
-  onHover({ intersect }: IHoverParam) {
+  onHover({ intersect }: IFuncParam) {
     if (intersect && intersect.point && intersect.face) {
       // this.rollOverMesh.position.x = round(intersect.point.x);
       // this.rollOverMesh.position.y = round(intersect.point.y);

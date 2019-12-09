@@ -42,8 +42,7 @@ function handleMouseUp({
       intersects = raycaster.intersectObjects(scene.children);
       if (intersects.length > 0) {
         engine.onClick({
-          position: intersects[0].point,
-          target: intersects[0].object
+          intersect: intersects[0]
         });
       }
     }
