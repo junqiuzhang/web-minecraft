@@ -6,7 +6,8 @@ interface ISetting extends ICommonParam {}
 export default function initSetting({
   scene,
   camera,
-  renderer
+  renderer,
+  engine
 }: ISetting) {
   // 背景色
   scene.background = new THREE.Color(0xcce0ff);
@@ -21,8 +22,8 @@ export default function initSetting({
   // 渲染器挂载
   document.body.appendChild(renderer.domElement);
   // 光线设置
-  light({ scene, camera, renderer });
+  light({ scene, camera, renderer, engine });
   // 大地设置
-  ground({ scene, camera, renderer });
+  ground({ scene, camera, renderer, engine });
   // 参数初始化
 }

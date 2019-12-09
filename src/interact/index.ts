@@ -8,13 +8,14 @@ export interface IInteract extends ICommonParam {}
 function interact({
   scene,
   camera,
-  renderer
+  renderer,
+  engine
 }: IInteract) {
-  const engine = new Engine({ scene, camera, renderer });
   bindControl({
     scene,
     camera,
-    renderer
+    renderer,
+    engine
   })
   bindClick({
     scene,
