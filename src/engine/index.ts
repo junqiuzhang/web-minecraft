@@ -1,6 +1,5 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
-import { round } from '../utils';
 import { StepLength } from '../constant';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
