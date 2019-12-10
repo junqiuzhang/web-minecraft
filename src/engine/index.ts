@@ -8,8 +8,7 @@ interface IEngine {
   renderer: THREE.Renderer;
 }
 interface IState {
-  hoverTarget: THREE.Object3D;
-  hoverTargetHex: THREE.Color;
+  isShiftDown: boolean;
 }
 interface IClickParam {
   intersects?: THREE.Intersection[];
@@ -17,7 +16,7 @@ interface IClickParam {
 interface IHoverParam {
   intersects?: THREE.Intersection[];
 }
-interface IKeyDownParam {
+interface IMoveParam {
   type: Direction;
 }
 class engine {
@@ -25,6 +24,8 @@ class engine {
   private camera: THREE.Camera;
   private renderer: THREE.Renderer;
   private state: IState;
+  private mesh: THREE.Mesh;
+  private grid: THREE.GridHelper;
   private rollOverMesh: THREE.Mesh;
   constructor({
     scene,
@@ -35,8 +36,7 @@ class engine {
     this.camera = camera;
     this.renderer = renderer;
     this.state = {
-      hoverTarget: new THREE.Object3D(),
-      hoverTargetHex: new THREE.Color()
+      isShiftDown: false
     }
     this._mountRollOverMesh();
   }
@@ -50,7 +50,29 @@ class engine {
   _getRealIntersect(intersects: THREE.Intersection[]) {
     return intersects.filter(intersect => intersect.object !== this.rollOverMesh)[0];
   }
+  _add(target: THREE.Object3D) {
+    this.scene.add(target);
+  }
+  addMesh(target: THREE.Mesh) {
+    this.mesh = target;
+    this._add(target);
+  }
+  addGrid(target: THREE.GridHelper) {
+    this.grid = target;
+    this._add(target);
+  }
+  _remove(target: THREE.Object3D) {
+    this.scene.remove(target);
+  }
   onClick({ intersects }: IClickParam) {
+    const { isShiftDown } = this.state;
+    if (!isShiftDown) {
+      this.onCreate({ intersects });
+    } else {
+      this.onRemove({ intersects });
+    }
+  }
+  onCreate({ intersects }: IClickParam) {
     const { point, face } = this._getRealIntersect(intersects);
     const cube = new Cube();
     if (face instanceof THREE.Face3) {
@@ -61,6 +83,12 @@ class engine {
     }
     this.scene.add(cube);
   }
+  onRemove({ intersects }: IClickParam) {
+    const { object } = this._getRealIntersect(intersects);
+    if (object !== this.mesh && object !== this.grid) {
+      this._remove(object);
+    }
+  }
   onHover({ intersects }: IHoverParam) {
     const { point, face } = this._getRealIntersect(intersects);
     if (face instanceof THREE.Face3) {
@@ -70,7 +98,7 @@ class engine {
       this.rollOverMesh.position.copy(point.floor().addScalar(0.5));
     }
   }
-  onKeyDown({ type }: IKeyDownParam) {
+  onMove({ type }: IMoveParam) {
     if (type === 'up') {
       this.camera.translateZ(-StepLength);
     } else if (type === 'down') {
@@ -81,6 +109,9 @@ class engine {
       this.camera.translateX(StepLength);
     }
     this.camera.position.y = 2;
+  }
+  onShiftChange(isShiftDown: boolean) {
+    this.state.isShiftDown = isShiftDown;
   }
 }
 export default engine;
