@@ -15,9 +15,7 @@ function handleMouseMove({
     raycaster.setFromCamera(mousePosition, camera);
     intersects = raycaster.intersectObjects(scene.children, true);
     if (intersects.length > 0) {
-      engine.onHover({
-        intersects: intersects
-      });
+      engine.onHover(intersects);
     }
   }, MouseMoveWaitTime)
 }

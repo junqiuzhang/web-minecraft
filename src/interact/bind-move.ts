@@ -8,21 +8,13 @@ function handleKeyDown({
   return throttle(function (this: HTMLElement, event: KeyboardEvent) {
     const { keyCode } = event;
     if (keyCode === 38 || keyCode === 87) {
-      engine.onMove({
-        type: 'up'
-      })
+      engine.onMove('up')
     } else if (keyCode === 40 || keyCode === 83) {
-      engine.onMove({
-        type: 'down'
-      })
+      engine.onMove('down')
     } else if (keyCode === 37 || keyCode === 65) {
-      engine.onMove({
-        type: 'left'
-      })
+      engine.onMove('left')
     } else if (keyCode === 39 || keyCode === 68) {
-      engine.onMove({
-        type: 'down'
-      })
+      engine.onMove('down')
     }
   }, KeyDownWaitTime)
 }

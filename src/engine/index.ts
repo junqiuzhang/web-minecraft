@@ -10,12 +10,6 @@ interface IEngine {
 interface IState {
   isShiftDown: boolean;
 }
-interface IClickParam {
-  intersects?: THREE.Intersection[];
-}
-interface IHoverParam {
-  intersects?: THREE.Intersection[];
-}
 interface IMoveParam {
   type: Direction;
 }
@@ -64,15 +58,15 @@ class engine {
   _remove(target: THREE.Object3D) {
     this.scene.remove(target);
   }
-  onClick({ intersects }: IClickParam) {
+  onClick(intersects: THREE.Intersection[]) {
     const { isShiftDown } = this.state;
     if (!isShiftDown) {
-      this.onCreate({ intersects });
+      this.onCreate(intersects);
     } else {
-      this.onRemove({ intersects });
+      this.onRemove(intersects);
     }
   }
-  onCreate({ intersects }: IClickParam) {
+  onCreate(intersects: THREE.Intersection[]) {
     const { point, face } = this._getRealIntersect(intersects);
     const cube = new Cube();
     if (face instanceof THREE.Face3) {
@@ -83,13 +77,13 @@ class engine {
     }
     this.scene.add(cube);
   }
-  onRemove({ intersects }: IClickParam) {
+  onRemove(intersects: THREE.Intersection[]) {
     const { object } = this._getRealIntersect(intersects);
     if (object !== this.mesh && object !== this.grid) {
       this._remove(object);
     }
   }
-  onHover({ intersects }: IHoverParam) {
+  onHover(intersects: THREE.Intersection[]) {
     const { point, face } = this._getRealIntersect(intersects);
     if (face instanceof THREE.Face3) {
       this.rollOverMesh.position.copy(point).add(face.normal.divideScalar(2));
@@ -98,7 +92,7 @@ class engine {
       this.rollOverMesh.position.copy(point.floor().addScalar(0.5));
     }
   }
-  onMove({ type }: IMoveParam) {
+  onMove(type: Direction) {
     if (type === 'up') {
       this.camera.translateZ(-StepLength);
     } else if (type === 'down') {
