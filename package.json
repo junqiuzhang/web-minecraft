@@ -4,7 +4,8 @@
   "description": "web minecraft",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server"
+    "start": "webpack-dev-server",
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -15,6 +16,7 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/runtime": "^7.4.5",
     "@types/node": "^12.0.10",
+    "@types/three": "^0.103.2",
     "babel-loader": "^8.0.6",
     "cross-env": "^5.2.0",
     "css-loader": "^2.1.1",
@@ -34,8 +36,6 @@
   },
   "homepage": "https://github.com/junqiuzhang/web-minecraft#readme",
   "dependencies": {
-    "@types/three": "^0.103.2",
-    "three": "^0.111.0",
-    "three-pointer-lock-controls": "^1.0.0"
+    "three": "^0.111.0"
   }
 }
