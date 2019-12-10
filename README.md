@@ -5,7 +5,8 @@ The aim of the project is to migrate Minecraft to the web platform, that based o
 #### use
 run `npm start`, then you will see the page at `//localhost:3000`
 #### todo
-- [ ] remove object
+- [x] remove object
 - [ ] jump
 - [ ] light be changed for time
 - [ ] ground and water
+- [ ] gravity
