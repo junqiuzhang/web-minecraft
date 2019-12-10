@@ -1,5 +1,5 @@
 import bindControl from './bind-control';
-import bindCreateCube from './bind-create-cube';
+import bindClick from './bind-click';
 import bindHover from './bind-hover';
 import bindMove from './bind-move';
 import { ICommonParam } from '../interface';
@@ -16,7 +16,7 @@ function interact({
     renderer,
     engine
   })
-  bindCreateCube({
+  bindClick({
     scene,
     camera,
     renderer,

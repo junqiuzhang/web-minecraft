@@ -2,8 +2,8 @@ import * as THREE from 'three';
 import { MouseMoveWaitTime } from '../constant';
 import { throttle } from '../utils';
 import { IInteract } from './index';
-interface IBindCreate extends IInteract {}
-interface IHandleClick extends IBindCreate {
+interface IBindClick extends IInteract {}
+interface IHandleClick extends IBindClick {
   clickOption: {
     flag: boolean;
   }
@@ -45,12 +45,12 @@ function handleMouseUp({
     }
   }
 }
-function bindCreateCube({
+function bindClick({
   scene,
   camera,
   renderer,
   engine
-}: IBindCreate) {
+}: IBindClick) {
   let clickOption = {
     flag: false
   }
@@ -76,4 +76,4 @@ function bindCreateCube({
     clickOption
   }));
 }
-export default bindCreateCube;
+export default bindClick;
