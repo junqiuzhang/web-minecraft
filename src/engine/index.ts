@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
 import { round } from '../utils';
+import { StepLength } from '../constant';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -66,13 +67,13 @@ class engine {
   }
   onKeyDown({ type }: IKeyDownParam) {
     if (type === 'up') {
-      this.camera.translateZ(-1);
+      this.camera.translateZ(-StepLength);
     } else if (type === 'down') {
-      this.camera.translateZ(1);
+      this.camera.translateZ(StepLength);
     } else if (type === 'left') {
-      this.camera.translateX(-1);
+      this.camera.translateX(-StepLength);
     } else if (type === 'right') {
-      this.camera.translateX(1);
+      this.camera.translateX(StepLength);
     }
     this.camera.position.y = 2;
   }
