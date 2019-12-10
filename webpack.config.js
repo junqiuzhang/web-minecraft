@@ -54,8 +54,8 @@ module.exports = {
     new HtmlWebPackPlugin()
   ],
   stats: {
-    all: true,
-    builtAt: true,
+    all: false,
+    builtAt: false,
     errors: true,
     errorDetails: true,
     timings: true
