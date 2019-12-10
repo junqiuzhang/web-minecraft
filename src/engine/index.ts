@@ -1,18 +1,24 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
-import { ICommonParam } from '../interface';
 import { round } from '../utils';
+type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
   camera: THREE.Camera;
   renderer: THREE.Renderer;
 }
-interface IFuncParam {
-  intersect?: THREE.Intersection;
-}
 interface IState {
   hoverTarget: THREE.Object3D;
   hoverTargetHex: THREE.Color;
+}
+interface IClickParam {
+  intersects?: THREE.Intersection[];
+}
+interface IHoverParam {
+  intersects?: THREE.Intersection[];
+}
+interface IKeyDownParam {
+  type: Direction;
 }
 class engine {
   private scene: THREE.Scene;
@@ -41,19 +47,34 @@ class engine {
     this.rollOverMesh = rollOverMesh;
     this.scene.add( rollOverMesh );
   }
-  onClick({ intersect }: IFuncParam) {
-    const { point } = intersect;
+  _getRealIntersect(intersects: THREE.Intersection[]) {
+    return intersects.filter(intersect => intersect.object !== this.rollOverMesh)[0];
+  }
+  onClick({ intersects }: IClickParam) {
+    const { point } = this._getRealIntersect(intersects);
     const cube = new Cube();
     cube.position.x = round(point.x);
     cube.position.y = round(point.y);
     cube.position.z = round(point.z);
     this.scene.add(cube);
   }
-  onHover({ intersect }: IFuncParam) {
-    const { point } = intersect;
+  onHover({ intersects }: IHoverParam) {
+    const { point } = this._getRealIntersect(intersects);
     this.rollOverMesh.position.x = round(point.x);
     this.rollOverMesh.position.y = round(point.y);
     this.rollOverMesh.position.z = round(point.z);
+  }
+  onKeyDown({ type }: IKeyDownParam) {
+
+    if (type === 'up') {
+      this.camera.translateY(1);
+    } else if (type === 'down') {
+      // this.camera.position.addScalar(0.1);
+    } else if (type === 'left') {
+      // this.camera.position.addScalar(0.1);
+    } else if (type === 'right') {
+      // this.camera.position.addScalar(0.1);
+    }
   }
 }
 export default engine;

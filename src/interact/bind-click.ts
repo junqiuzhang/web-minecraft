@@ -39,7 +39,7 @@ function handleMouseUp({
       intersects = raycaster.intersectObjects(scene.children);
       if (intersects.length > 0) {
         engine.onClick({
-          intersect: intersects[0]
+          intersects: intersects
         });
       }
     }

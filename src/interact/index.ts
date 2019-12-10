@@ -2,7 +2,7 @@ import * as THREE from 'three';
 import bindControl from './bind-control';
 import bindClick from './bind-click';
 import bindHover from './bind-hover';
-import bindKeyPress from './bind-key-press';
+import bindKeyDown from './bind-key-down';
 import { ICommonParam } from '../interface';
 export interface IInteract extends ICommonParam {}
 function interact({
@@ -29,7 +29,7 @@ function interact({
     renderer,
     engine
   })
-  bindKeyPress({
+  bindKeyDown({
     scene,
     camera,
     renderer,
