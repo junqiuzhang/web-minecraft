@@ -10,3 +10,4 @@ run `npm start`, then you will see the page at `//localhost:3000`
 - [ ] light be changed for time
 - [ ] ground and water
 - [ ] gravity
+- [ ] impact checking
