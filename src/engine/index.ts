@@ -65,16 +65,16 @@ class engine {
     this.rollOverMesh.position.z = round(point.z);
   }
   onKeyDown({ type }: IKeyDownParam) {
-
     if (type === 'up') {
-      this.camera.translateY(1);
+      this.camera.translateZ(-1);
     } else if (type === 'down') {
-      // this.camera.position.addScalar(0.1);
+      this.camera.translateZ(1);
     } else if (type === 'left') {
-      // this.camera.position.addScalar(0.1);
+      this.camera.translateX(-1);
     } else if (type === 'right') {
-      // this.camera.position.addScalar(0.1);
+      this.camera.translateX(1);
     }
+    this.camera.position.y = 2;
   }
 }
 export default engine;
