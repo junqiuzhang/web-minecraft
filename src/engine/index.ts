@@ -42,28 +42,34 @@ class engine {
     this._mountRollOverMesh();
   }
   _mountRollOverMesh() {
-    const rollOverGeo = new THREE.BoxBufferGeometry( 1, 1, 1 );
-    const rollOverMaterial = new THREE.MeshBasicMaterial( { color: 0xff0000, opacity: 0.5, transparent: true } );
-    const rollOverMesh = new THREE.Mesh( rollOverGeo, rollOverMaterial );
+    const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
+    const rollOverMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0.5, transparent: true });
+    const rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
     this.rollOverMesh = rollOverMesh;
-    this.scene.add( rollOverMesh );
+    this.scene.add(rollOverMesh);
   }
   _getRealIntersect(intersects: THREE.Intersection[]) {
     return intersects.filter(intersect => intersect.object !== this.rollOverMesh)[0];
   }
   onClick({ intersects }: IClickParam) {
-    const { point } = this._getRealIntersect(intersects);
+    const { point, face } = this._getRealIntersect(intersects);
     const cube = new Cube();
-    cube.position.x = round(point.x);
-    cube.position.y = round(point.y);
-    cube.position.z = round(point.z);
+    if (face instanceof THREE.Face3) {
+      cube.position.copy(point).add(face.normal.divideScalar(2));
+      cube.position.floor().addScalar(0.5);
+    } else {
+      cube.position.copy(point.floor().addScalar(0.5));
+    }
     this.scene.add(cube);
   }
   onHover({ intersects }: IHoverParam) {
-    const { point } = this._getRealIntersect(intersects);
-    this.rollOverMesh.position.x = round(point.x);
-    this.rollOverMesh.position.y = round(point.y);
-    this.rollOverMesh.position.z = round(point.z);
+    const { point, face } = this._getRealIntersect(intersects);
+    if (face instanceof THREE.Face3) {
+      this.rollOverMesh.position.copy(point).add(face.normal.divideScalar(2));
+      this.rollOverMesh.position.floor().addScalar(0.5);
+    } else {
+      this.rollOverMesh.position.copy(point.floor().addScalar(0.5));
+    }
   }
   onKeyDown({ type }: IKeyDownParam) {
     if (type === 'up') {

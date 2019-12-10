@@ -9,9 +9,6 @@ export function throttle(func: Function, wait: number) {
     }
   }
 }
-export function round(x: number) {
-  return x >= 0 ? Math.round(x) + 0.5 : Math.round(x) - 0.5;
-}
 export function distance(x: number, y: number, z?: number) {
   return Math.sqrt(x * x + y * y + z * z);
 }
