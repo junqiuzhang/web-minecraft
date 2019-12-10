@@ -2,12 +2,12 @@ import * as THREE from 'three';
 import { MouseMoveWaitTime } from '../constant';
 import { throttle } from '../utils';
 import { IInteract } from './index';
-interface IBindClick extends IInteract {}
+interface IBindHover extends IInteract {}
 function handleMouseMove({
   scene,
   camera,
   engine
-}: IBindClick) {
+}: IBindHover) {
   let raycaster = new THREE.Raycaster();
   let intersects = raycaster.intersectObjects(scene.children);
   return throttle(function (this: HTMLElement, event: MouseEvent) {
@@ -21,12 +21,12 @@ function handleMouseMove({
     }
   }, MouseMoveWaitTime)
 }
-function bindHandleHover({
+function bindHover({
   scene,
   camera,
   renderer,
   engine
-}: IBindClick) {
+}: IBindHover) {
   document.body.addEventListener('mousemove', handleMouseMove({
     scene,
     camera,
@@ -34,4 +34,4 @@ function bindHandleHover({
     engine
   }));
 }
-export default bindHandleHover;
+export default bindHover;

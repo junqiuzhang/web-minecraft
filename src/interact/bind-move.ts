@@ -1,17 +1,10 @@
-import * as THREE from 'three';
 import { throttle } from '../utils';
 import { IInteract } from './index';
 import { KeyDownWaitTime } from '../constant';
-import Engine from '../engine';
-interface IBindClick extends IInteract {
-  engine: Engine;
-}
-interface IHandleClick extends IBindClick {}
+interface IBindMove extends IInteract {}
 function handleKeyDown({
-  scene,
-  camera,
   engine
-}: IHandleClick) {
+}: IBindMove) {
   return throttle(function (this: HTMLElement, event: KeyboardEvent) {
     const { keyCode } = event;
     if (keyCode === 38 || keyCode === 87) {
@@ -33,12 +26,12 @@ function handleKeyDown({
     }
   }, KeyDownWaitTime)
 }
-function bindHandleKeyDown({
+function bindMove({
   scene,
   camera,
   renderer,
   engine
-}: IBindClick) {
+}: IBindMove) {
   document.body.addEventListener('keydown', handleKeyDown({
     scene,
     camera,
@@ -46,4 +39,4 @@ function bindHandleKeyDown({
     engine
   }));
 }
-export default bindHandleKeyDown;
+export default bindMove;

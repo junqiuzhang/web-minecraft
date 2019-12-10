@@ -1,8 +1,7 @@
-import * as THREE from 'three';
 import bindControl from './bind-control';
-import bindClick from './bind-click';
+import bindCreateCube from './bind-create-cube';
 import bindHover from './bind-hover';
-import bindKeyDown from './bind-key-down';
+import bindMove from './bind-move';
 import { ICommonParam } from '../interface';
 export interface IInteract extends ICommonParam {}
 function interact({
@@ -17,7 +16,7 @@ function interact({
     renderer,
     engine
   })
-  bindClick({
+  bindCreateCube({
     scene,
     camera,
     renderer,
@@ -29,7 +28,7 @@ function interact({
     renderer,
     engine
   })
-  bindKeyDown({
+  bindMove({
     scene,
     camera,
     renderer,
