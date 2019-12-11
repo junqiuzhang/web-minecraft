@@ -36,6 +36,7 @@
   },
   "homepage": "https://github.com/junqiuzhang/web-minecraft#readme",
   "dependencies": {
+    "cannon": "^0.6.2",
     "three": "^0.111.0"
   }
 }
