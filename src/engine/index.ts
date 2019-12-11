@@ -17,6 +17,7 @@ class engine {
   private renderer: THREE.Renderer;
   private state: IState;
   private world: CANNON.World;
+  private threeBindCannon: Array<{ three: THREE.Mesh, cannon: CANNON.Body }>
   public mesh: THREE.Mesh;
   public grid: THREE.GridHelper;
   private rollOverMesh: THREE.Mesh;
@@ -36,9 +37,20 @@ class engine {
     this._mountRollOverMesh();
     this._mountCameraMesh();
   }
+  update() {
+    requestAnimationFrame(this.update);
+    this.update();
+    this.world.step(1 / 60);
+    this.threeBindCannon.map(obj => {
+      const { x, y, z } = obj.cannon.position;
+      const vec = new THREE.Vector3(x, y, z);
+      obj.three.position.copy(vec);
+    })
+  }
   _mountCannon() {
     this.world = new CANNON.World();
-    this.world.gravity.set(0, 0, -9.82);
+    this.world.gravity.set(0, -10, 0);
+    this.world.broadphase = new CANNON.NaiveBroadphase();
   }
   _mountRollOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
@@ -66,15 +78,24 @@ class engine {
   }
   addMesh(target: THREE.Mesh) {
     target.geometry.computeBoundingBox();
-    const x = target.geometry.boundingBox.max.x - target.geometry.boundingBox.min.x;
-    const y = target.geometry.boundingBox.max.y - target.geometry.boundingBox.min.y;
-    const z = target.geometry.boundingBox.max.z - target.geometry.boundingBox.min.z;
+    const { x, y, z } = target.position;
+    const diffX = target.geometry.boundingBox.max.x - target.geometry.boundingBox.min.x;
+    const diffY = target.geometry.boundingBox.max.y - target.geometry.boundingBox.min.y;
+    const diffZ = target.geometry.boundingBox.max.z - target.geometry.boundingBox.min.z;
     const object = new CANNON.Body({
-      mass: 5, // kg
-      position: new CANNON.Vec3(0, 0, 10), // m
-      shape: new CANNON.Sphere(1) // m
+      mass: diffX * diffY * diffZ, // kg
+      position: new CANNON.Vec3(x, y, z), // m
+      shape: new CANNON.Box(new CANNON.Vec3(diffX, diffY, diffZ)) // m
+    })
+    this.threeBindCannon.push({
+      three: target,
+      cannon: object
     })
     this.add(target);
+  }
+  removeMesh(target: THREE.Mesh) {
+    this.threeBindCannon = this.threeBindCannon.filter(obj => obj.three !== target);
+    this.remove(target);
   }
   onClick(intersects: THREE.Intersection[]) {
     const { isShiftDown } = this.state;
