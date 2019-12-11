@@ -15,6 +15,7 @@
     "@babel/core": "^7.4.5",
     "@babel/preset-env": "^7.4.5",
     "@babel/runtime": "^7.4.5",
+    "@types/cannon": "^0.1.4",
     "@types/node": "^12.0.10",
     "@types/three": "^0.103.2",
     "babel-loader": "^8.0.6",

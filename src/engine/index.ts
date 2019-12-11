@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import * as CANNON from 'cannon';
 import Cube from '../geometry/cube';
 import { StepLength, CrashDistance } from '../constant';
 type Direction = 'up' | 'down' | 'left' | 'right';
@@ -15,8 +16,9 @@ class engine {
   private camera: THREE.Camera;
   private renderer: THREE.Renderer;
   private state: IState;
-  private mesh: THREE.Mesh;
-  private grid: THREE.GridHelper;
+  private world: CANNON.World;
+  public mesh: THREE.Mesh;
+  public grid: THREE.GridHelper;
   private rollOverMesh: THREE.Mesh;
   private cameraMesh: THREE.Mesh;
   constructor({
@@ -30,15 +32,20 @@ class engine {
     this.state = {
       isShiftDown: false
     }
+    this._mountCannon();
     this._mountRollOverMesh();
     this._mountCameraMesh();
+  }
+  _mountCannon() {
+    this.world = new CANNON.World();
+    this.world.gravity.set(0, 0, -9.82);
   }
   _mountRollOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
     const rollOverMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0.5, transparent: true });
     const rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
     this.rollOverMesh = rollOverMesh;
-    this._add(rollOverMesh);
+    this.add(rollOverMesh);
   }
   _mountCameraMesh() {
     const geometry = new THREE.BoxGeometry(1, 2, 1);
@@ -46,24 +53,28 @@ class engine {
     const cameraMesh = new THREE.Mesh(geometry, material);
     this.cameraMesh = cameraMesh;
     this.cameraMesh.position.addVectors(this.camera.position, new THREE.Vector3(0, -0.5, 0));
-    this._add(cameraMesh);
+    this.add(cameraMesh);
   }
   _getRealIntersect(intersects: THREE.Intersection[]) {
     return intersects.filter(intersect => intersect.object !== this.rollOverMesh)[0];
   }
-  _add(target: THREE.Object3D) {
+  add(target: THREE.Object3D) {
     this.scene.add(target);
   }
-  addMesh(target: THREE.Mesh) {
-    this.mesh = target;
-    this._add(target);
-  }
-  addGrid(target: THREE.GridHelper) {
-    this.grid = target;
-    this._add(target);
-  }
-  _remove(target: THREE.Object3D) {
+  remove(target: THREE.Object3D) {
     this.scene.remove(target);
+  }
+  addMesh(target: THREE.Mesh) {
+    target.geometry.computeBoundingBox();
+    const x = target.geometry.boundingBox.max.x - target.geometry.boundingBox.min.x;
+    const y = target.geometry.boundingBox.max.y - target.geometry.boundingBox.min.y;
+    const z = target.geometry.boundingBox.max.z - target.geometry.boundingBox.min.z;
+    const object = new CANNON.Body({
+      mass: 5, // kg
+      position: new CANNON.Vec3(0, 0, 10), // m
+      shape: new CANNON.Sphere(1) // m
+    })
+    this.add(target);
   }
   onClick(intersects: THREE.Intersection[]) {
     const { isShiftDown } = this.state;
@@ -87,7 +98,7 @@ class engine {
   onRemove(intersects: THREE.Intersection[]) {
     const { object } = this._getRealIntersect(intersects);
     if (object !== this.mesh && object !== this.grid) {
-      this._remove(object);
+      this.remove(object);
     }
   }
   onHover(intersects: THREE.Intersection[]) {
