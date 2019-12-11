@@ -19,7 +19,7 @@ Minecraft on the web platform, that based on `Three.js`.
 - Press WASD key or Arrow key to move position
 ## Todos
 - [x] remove object
-- [ ] impact checking
+- [x] impact checking
 - [ ] gravity
 - [ ] jump
 - [ ] light be changed for time
