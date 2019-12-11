@@ -10,9 +10,6 @@ interface IEngine {
 interface IState {
   isShiftDown: boolean;
 }
-interface IMoveParam {
-  type: Direction;
-}
 class engine {
   private scene: THREE.Scene;
   private camera: THREE.Camera;
