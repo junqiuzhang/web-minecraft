@@ -40,12 +40,11 @@ class engine {
   }
   update() {
     requestAnimationFrame(this.update);
-    this.update();
     this.world.step(1 / 60);
     this.threeBindCannon.map(obj => {
-      const { x, y, z } = obj.cannon.position;
-      const vec = new THREE.Vector3(x, y, z);
-      obj.three.position.copy(vec);
+      const { position, quaternion } = obj.cannon;
+      obj.three.position.copy(new THREE.Vector3(position.x, position.y, position.z));
+      obj.three.quaternion.copy(new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
     })
   }
   _mountCannon() {
@@ -74,8 +73,14 @@ class engine {
   add(target: THREE.Object3D) {
     this.scene.add(target);
   }
+  addCannon(object: CANNON.Body) {
+    this.world.addBody(object);
+  }
   remove(target: THREE.Object3D) {
     this.scene.remove(target);
+  }
+  removeCannon(object: CANNON.Body) {
+    this.world.remove(object);
   }
   addMesh(target: THREE.Mesh) {
     target.geometry.computeBoundingBox();
@@ -93,6 +98,7 @@ class engine {
       cannon: object
     })
     this.add(target);
+    this.addCannon(object);
   }
   removeMesh(target: THREE.Mesh) {
     this.threeBindCannon = this.threeBindCannon.filter(obj => obj.three !== target);
