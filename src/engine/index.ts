@@ -30,6 +30,7 @@ class engine {
     this.scene = scene;
     this.camera = camera;
     this.renderer = renderer;
+    this.threeBindCannon = [];
     this.state = {
       isShiftDown: false
     }
@@ -114,12 +115,12 @@ class engine {
     } else {
       cube.position.copy(point.floor().addScalar(0.5));
     }
-    this.scene.add(cube);
+    this.addMesh(cube);
   }
   onRemove(intersects: THREE.Intersection[]) {
     const { object } = this._getRealIntersect(intersects);
-    if (object !== this.mesh && object !== this.grid) {
-      this.remove(object);
+    if (object !== this.mesh && object !== this.grid && object instanceof THREE.Mesh) {
+      this.removeMesh(object);
     }
   }
   onHover(intersects: THREE.Intersection[]) {
