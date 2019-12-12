@@ -118,8 +118,6 @@ class engine {
     this.threeBindCannon = this.threeBindCannon.filter(obj => obj.three !== target);
   }
   onClick(intersects: THREE.Intersection[]) {
-    console.log(this.threeBindCannon);
-    
     const { isShiftDown } = this.state;
     if (!isShiftDown) {
       this.onCreate(intersects);
