@@ -34,6 +34,7 @@ class engine {
     this.state = {
       isShiftDown: false
     }
+    this.update = this.update.bind(this);
     this.mountCannon();
     this.mountOverMesh();
     this.mountCameraMesh();
@@ -41,16 +42,19 @@ class engine {
   update() {
     requestAnimationFrame(this.update);
     this.cannon.step(1 / 60);
-    this.threeBindCannon.forEach(obj => {
+    for (let i = 0; i < this.threeBindCannon.length; i++) {
+      const obj = this.threeBindCannon[i];
       const { position, quaternion } = obj.cannon;
       obj.three.position.copy(new THREE.Vector3(position.x, position.y, position.z));
       obj.three.quaternion.copy(new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
-    })
+    }
   }
   private mountCannon() {
     this.cannon = new CANNON.World();
     this.cannon.gravity.set(0, -10, 0);
     this.cannon.broadphase = new CANNON.NaiveBroadphase();
+    this.cannon.solver.iterations = 10;
+    this.update();
   }
   private mountOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
@@ -65,7 +69,7 @@ class engine {
     const cameraMesh = new THREE.Mesh(geometry, material);
     this.cameraMesh = cameraMesh;
     this.cameraMesh.position.addVectors(this.camera.position, new THREE.Vector3(0, -0.5, 0));
-    this.add(cameraMesh);
+    this.addMesh(cameraMesh);
   }
   private getRealIntersect(intersects: THREE.Intersection[]) {
     return intersects.filter(intersect => intersect.object !== this.overMesh)[0];
