@@ -93,16 +93,18 @@ class engine {
       position: new CANNON.Vec3(x, y, z), // m
       shape: new CANNON.Box(new CANNON.Vec3(diffX, diffY, diffZ)) // m
     })
+    this.add(target);
+    this.addCannon(object);
     this.threeBindCannon.push({
       three: target,
       cannon: object
     })
-    this.add(target);
-    this.addCannon(object);
   }
   removeMesh(target: THREE.Mesh) {
+    const bindObject = this.threeBindCannon.find(obj => obj.three === target);
+    this.remove(bindObject.three);
+    this.removeCannon(bindObject.cannon);
     this.threeBindCannon = this.threeBindCannon.filter(obj => obj.three !== target);
-    this.remove(target);
   }
   onClick(intersects: THREE.Intersection[]) {
     const { isShiftDown } = this.state;
