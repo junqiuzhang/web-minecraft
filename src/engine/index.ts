@@ -16,12 +16,12 @@ class engine {
   private camera: THREE.Camera;
   private renderer: THREE.Renderer;
   private state: IState;
-  private world: CANNON.World;
+  private cannon: CANNON.World;
   private threeBindCannon: Array<{ three: THREE.Mesh, cannon: CANNON.Body }>
-  public mesh: THREE.Mesh;
-  public grid: THREE.GridHelper;
-  private rollOverMesh: THREE.Mesh;
+  private overMesh: THREE.Mesh;
   private cameraMesh: THREE.Mesh;
+  mesh: THREE.Mesh;
+  grid: THREE.GridHelper;
   constructor({
     scene,
     camera,
@@ -34,32 +34,32 @@ class engine {
     this.state = {
       isShiftDown: false
     }
-    this._mountCannon();
-    this._mountRollOverMesh();
-    this._mountCameraMesh();
+    this.mountCannon();
+    this.mountRollOverMesh();
+    this.mountCameraMesh();
   }
   update() {
     requestAnimationFrame(this.update);
-    this.world.step(1 / 60);
-    this.threeBindCannon.map(obj => {
+    this.cannon.step(1 / 60);
+    this.threeBindCannon.forEach(obj => {
       const { position, quaternion } = obj.cannon;
       obj.three.position.copy(new THREE.Vector3(position.x, position.y, position.z));
       obj.three.quaternion.copy(new THREE.Quaternion(quaternion.x, quaternion.y, quaternion.z, quaternion.w));
     })
   }
-  _mountCannon() {
-    this.world = new CANNON.World();
-    this.world.gravity.set(0, -10, 0);
-    this.world.broadphase = new CANNON.NaiveBroadphase();
+  private mountCannon() {
+    this.cannon = new CANNON.World();
+    this.cannon.gravity.set(0, -10, 0);
+    this.cannon.broadphase = new CANNON.NaiveBroadphase();
   }
-  _mountRollOverMesh() {
+  private mountRollOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
     const rollOverMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0.5, transparent: true });
     const rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
-    this.rollOverMesh = rollOverMesh;
+    this.overMesh = rollOverMesh;
     this.add(rollOverMesh);
   }
-  _mountCameraMesh() {
+  private mountCameraMesh() {
     const geometry = new THREE.BoxGeometry(1, 2, 1);
     const material = new THREE.MeshLambertMaterial({ color: 0x000000, opacity: 0, transparent: true });
     const cameraMesh = new THREE.Mesh(geometry, material);
@@ -67,20 +67,20 @@ class engine {
     this.cameraMesh.position.addVectors(this.camera.position, new THREE.Vector3(0, -0.5, 0));
     this.add(cameraMesh);
   }
-  _getRealIntersect(intersects: THREE.Intersection[]) {
-    return intersects.filter(intersect => intersect.object !== this.rollOverMesh)[0];
+  private getRealIntersect(intersects: THREE.Intersection[]) {
+    return intersects.filter(intersect => intersect.object !== this.overMesh)[0];
   }
   add(target: THREE.Object3D) {
     this.scene.add(target);
   }
   addCannon(object: CANNON.Body) {
-    this.world.addBody(object);
+    this.cannon.addBody(object);
   }
   remove(target: THREE.Object3D) {
     this.scene.remove(target);
   }
   removeCannon(object: CANNON.Body) {
-    this.world.remove(object);
+    this.cannon.remove(object);
   }
   addMesh(target: THREE.Mesh) {
     target.geometry.computeBoundingBox();
@@ -113,7 +113,7 @@ class engine {
     }
   }
   onCreate(intersects: THREE.Intersection[]) {
-    const { point, face } = this._getRealIntersect(intersects);
+    const { point, face } = this.getRealIntersect(intersects);
     const cube = new Cube();
     if (face instanceof THREE.Face3) {
       cube.position.copy(point).add(face.normal.divideScalar(2));
@@ -124,18 +124,18 @@ class engine {
     this.addMesh(cube);
   }
   onRemove(intersects: THREE.Intersection[]) {
-    const { object } = this._getRealIntersect(intersects);
+    const { object } = this.getRealIntersect(intersects);
     if (object !== this.mesh && object !== this.grid && object instanceof THREE.Mesh) {
       this.removeMesh(object);
     }
   }
   onHover(intersects: THREE.Intersection[]) {
-    const { point, face } = this._getRealIntersect(intersects);
+    const { point, face } = this.getRealIntersect(intersects);
     if (face instanceof THREE.Face3) {
-      this.rollOverMesh.position.copy(point).add(face.normal.divideScalar(2));
-      this.rollOverMesh.position.floor().addScalar(0.5);
+      this.overMesh.position.copy(point).add(face.normal.divideScalar(2));
+      this.overMesh.position.floor().addScalar(0.5);
     } else {
-      this.rollOverMesh.position.copy(point.floor().addScalar(0.5));
+      this.overMesh.position.copy(point.floor().addScalar(0.5));
     }
   }
   onMove(type: Direction) {
@@ -173,7 +173,7 @@ class engine {
         //检测射线与多个物体相交的情况
         const intersects = ray.intersectObjects(objects, true);
         //获取第一个物体
-        const firstIntersectObject = this._getRealIntersect(intersects);
+        const firstIntersectObject = this.getRealIntersect(intersects);
         //如果物体存在且交点至中心的距离小于顶点至中心的距离，则发生碰撞
         if (firstIntersectObject && firstIntersectObject.distance < directionVector.length() + CrashDistance) {
           return true;
