@@ -111,6 +111,8 @@ class engine {
     this.threeBindCannon = this.threeBindCannon.filter(obj => obj.three !== target);
   }
   onClick(intersects: THREE.Intersection[]) {
+    console.log(this.threeBindCannon);
+    
     const { isShiftDown } = this.state;
     if (!isShiftDown) {
       this.onCreate(intersects);
@@ -119,7 +121,8 @@ class engine {
     }
   }
   onCreate(intersects: THREE.Intersection[]) {
-    const { point, face } = this.getRealIntersect(intersects);
+    const realIntersect = this.getRealIntersect(intersects);
+    const { point, face } = realIntersect;
     const cube = new Cube();
     if (face instanceof THREE.Face3) {
       cube.position.copy(point).add(face.normal.divideScalar(2));
@@ -130,13 +133,15 @@ class engine {
     this.addMesh(cube);
   }
   onRemove(intersects: THREE.Intersection[]) {
-    const { object } = this.getRealIntersect(intersects);
+    const realIntersect = this.getRealIntersect(intersects);
+    const { object } = realIntersect;
     if (object !== this.mesh && object !== this.grid && object instanceof THREE.Mesh) {
       this.removeMesh(object);
     }
   }
   onHover(intersects: THREE.Intersection[]) {
-    const { point, face } = this.getRealIntersect(intersects);
+    const realIntersect = this.getRealIntersect(intersects);
+    const { point, face } = realIntersect;
     if (face instanceof THREE.Face3) {
       this.overMesh.position.copy(point).add(face.normal.divideScalar(2));
       this.overMesh.position.floor().addScalar(0.5);
