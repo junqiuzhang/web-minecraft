@@ -38,6 +38,7 @@ class engine {
     this.mountCannon();
     this.mountOverMesh();
     this.mountCameraMesh();
+    this.update();
   }
   update() {
     requestAnimationFrame(this.update);
@@ -53,8 +54,14 @@ class engine {
     this.cannon = new CANNON.World();
     this.cannon.gravity.set(0, -10, 0);
     this.cannon.broadphase = new CANNON.NaiveBroadphase();
-    this.cannon.solver.iterations = 10;
-    this.update();
+    
+    const groundBody = new CANNON.Body({ 
+      mass: 0,
+      position: new CANNON.Vec3(0, -0.5, 0),
+      shape: new CANNON.Plane()
+    });
+    groundBody.quaternion.setFromAxisAngle(new CANNON.Vec3(1, 0, 0), - Math.PI / 2);    
+    this.addCannon(groundBody);
   }
   private mountOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
