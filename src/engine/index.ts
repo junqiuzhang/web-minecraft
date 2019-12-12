@@ -35,7 +35,7 @@ class engine {
       isShiftDown: false
     }
     this.mountCannon();
-    this.mountRollOverMesh();
+    this.mountOverMesh();
     this.mountCameraMesh();
   }
   update() {
@@ -52,7 +52,7 @@ class engine {
     this.cannon.gravity.set(0, -10, 0);
     this.cannon.broadphase = new CANNON.NaiveBroadphase();
   }
-  private mountRollOverMesh() {
+  private mountOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
     const rollOverMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0.5, transparent: true });
     const rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
