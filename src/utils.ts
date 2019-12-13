@@ -51,4 +51,5 @@ export function freeFall(target: THREE.Mesh, objects: THREE.Object3D[]) {
     const now = Date.now();
     target.position.setY(target.position.y - (now - pre) * Gravity / 1000);
   }
+  target.position.setY(Math.floor(target.position.y));
 }
