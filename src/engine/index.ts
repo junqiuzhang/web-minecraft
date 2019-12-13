@@ -1,6 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
-import { StepLength, CrashDistance } from '../constant';
+import { StepLength } from '../constant';
+import { isCrashed } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -111,38 +112,12 @@ class engine {
       this.camera.translateX(StepLength);
     }
     this.cameraMesh.position.addVectors(this.camera.position, new THREE.Vector3(0, -0.5, 0));
-    if (this.isCrashed(this.cameraMesh, this.scene.children)) {
+    if (isCrashed(this.cameraMesh, this.scene.children)) {
       this.camera.position.y = 1.5;
     }
   }
   onShiftChange(isShiftDown: boolean) {
     this.state.isShiftDown = isShiftDown;
-  }
-  isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]) {
-    //中心点坐标
-    const originPoint = target.position.clone();
-    if (target.geometry instanceof THREE.Geometry) {
-      const originVertices = target.geometry.vertices;
-      for (let vertexIndex = 0; vertexIndex < target.geometry.vertices.length; vertexIndex++) {
-        //顶点原始坐标
-        const localVertex = originVertices[vertexIndex].clone();
-        //顶点变换坐标
-        const globalVertex = localVertex.applyMatrix4(target.matrix);
-        //中心指向顶点的方向向量
-        const directionVector = globalVertex.sub(target.position);
-        //顶点沿方向向量方向的射线
-        const ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-        //检测射线与多个物体相交的情况
-        const intersects = ray.intersectObjects(objects, true);
-        //获取第一个物体
-        const firstIntersectObject = this.getRealIntersect(intersects);
-        //如果物体存在且交点至中心的距离小于顶点至中心的距离，则发生碰撞
-        if (firstIntersectObject && firstIntersectObject.distance < directionVector.length() + CrashDistance) {
-          return true;
-        }
-      }
-    }
-    return false;
   }
 }
 export default engine;
