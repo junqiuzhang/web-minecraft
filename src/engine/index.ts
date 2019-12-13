@@ -46,8 +46,8 @@ class engine {
     const material = new THREE.MeshLambertMaterial({ color: 0x000000, opacity: 0, transparent: true });
     const cameraMesh = new THREE.Mesh(geometry, material);
     this.cameraMesh = cameraMesh;
+    this.cameraMesh.position.copy(this.camera.position);
     bindProperties(this.cameraMesh.position, this.camera.position);
-    this.cameraMesh.position.setY(this.camera.position.y - 0.5);
     this.addMesh(cameraMesh);
   }
   private getRealIntersect(intersects: THREE.Intersection[]) {
