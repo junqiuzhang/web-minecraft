@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CrashDistance } from './constant';
+import { CrashDistance, Gravity } from './constant';
 export function throttle(func: Function, wait: number) {
   let pre = Date.now();
   return (...args) => {
@@ -13,7 +13,7 @@ export function throttle(func: Function, wait: number) {
 export function distance(x: number, y: number, z?: number) {
   return Math.sqrt(x * x + y * y + z * z);
 }
-export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
+export function isCrashedRaycaster(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
   //中心点坐标
   const originPoint = target.position.clone();
   if (target.geometry instanceof THREE.Geometry) {
@@ -38,4 +38,17 @@ export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolea
     }
   }
   return false;
+}
+export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
+  if (target.position.distanceTo(objects[0].position) < CrashDistance + 0.5) {
+    return true;
+  }
+  return false;
+}
+export function freeFall(target: THREE.Mesh, objects: THREE.Object3D[]) {
+  const pre = Date.now();
+  while (!isCrashed(target, objects)) {
+    const now = Date.now();
+    target.position.setY(target.position.y - (now - pre) * Gravity / 1000);
+  }
 }

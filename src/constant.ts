@@ -7,3 +7,4 @@ export const MouseMoveWaitTime = 16;
 export const KeyDownWaitTime = 16;
 export const StepLength = 0.2;
 export const CrashDistance = 0.1;
+export const Gravity = 9.8;
