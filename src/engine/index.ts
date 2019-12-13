@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
 import { StepLength } from '../constant';
-import { isCrashed, isCrashedBottom, freeFall } from '../utils';
+import { bindProperties, isCrashed, isCrashedBottom, freeFall } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -46,7 +46,8 @@ class engine {
     const material = new THREE.MeshLambertMaterial({ color: 0x000000, opacity: 0, transparent: true });
     const cameraMesh = new THREE.Mesh(geometry, material);
     this.cameraMesh = cameraMesh;
-    this.cameraMesh.position.addVectors(this.camera.position, new THREE.Vector3(0, -0.5, 0));
+    this.cameraMesh.position.setY(this.camera.position.y - 0.5);
+    bindProperties(this.camera.position, this.cameraMesh.position);
     this.addMesh(cameraMesh);
   }
   private getRealIntersect(intersects: THREE.Intersection[]) {
