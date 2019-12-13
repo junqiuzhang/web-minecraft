@@ -52,20 +52,13 @@ export function freeFall(target: THREE.Mesh, objects: THREE.Object3D[]) {
   render();
 }
 export function bindProperties(independentVec: Object, dependentVec: Object) {
-  Object.getOwnPropertyNames(independentVec).forEach(prop => {
-    if (typeof independentVec[prop] === 'function') {
-      independentVec[prop] = new Proxy(independentVec[prop], {
+  for (const key in independentVec) {
+    if (typeof independentVec[key] === 'function') {
+      independentVec[key] = new Proxy(independentVec[key], {
         apply: function (target, thisArg, argArray) {
-          dependentVec[prop].apply(dependentVec, argArray);
-        }
-      })
-    } else {
-      independentVec[prop] = new Proxy(independentVec[prop], {
-        set: function (target, p, value, receiver): boolean {
-          dependentVec[prop].set(value);
-          return true;
+          dependentVec[key].apply(dependentVec, argArray);
         }
       })
     }
-  })
+  }
 }

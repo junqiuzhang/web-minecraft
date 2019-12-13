@@ -46,8 +46,8 @@ class engine {
     const material = new THREE.MeshLambertMaterial({ color: 0x000000, opacity: 0, transparent: true });
     const cameraMesh = new THREE.Mesh(geometry, material);
     this.cameraMesh = cameraMesh;
+    bindProperties(this.cameraMesh.position, this.camera.position);
     this.cameraMesh.position.setY(this.camera.position.y - 0.5);
-    bindProperties(this.camera.position, this.cameraMesh.position);
     this.addMesh(cameraMesh);
   }
   private getRealIntersect(intersects: THREE.Intersection[]) {
@@ -108,15 +108,14 @@ class engine {
   }
   onMove(type: Direction) {
     if (type === 'up') {
-      this.camera.translateZ(-StepLength);
+      this.cameraMesh.translateZ(-StepLength);
     } else if (type === 'down') {
-      this.camera.translateZ(StepLength);
+      this.cameraMesh.translateZ(StepLength);
     } else if (type === 'left') {
-      this.camera.translateX(-StepLength);
+      this.cameraMesh.translateX(-StepLength);
     } else if (type === 'right') {
-      this.camera.translateX(StepLength);
+      this.cameraMesh.translateX(StepLength);
     }
-    this.cameraMesh.position.addVectors(this.camera.position, new THREE.Vector3(0, -0.5, 0));
     freeFall(this.cameraMesh, this.scene.children);
   }
   onShiftChange(isShiftDown: boolean) {
