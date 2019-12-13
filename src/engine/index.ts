@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
 import { StepLength } from '../constant';
-import { bindProperties, isCrashed, isCrashedBottom, freeFall } from '../utils';
+import { bindProperties, isCrashed, isCrashedBottom, fall, jump } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -84,7 +84,7 @@ class engine {
     } else {
       cube.position.copy(point.floor().addScalar(0.5));
     }
-    freeFall(cube, this.scene.children);
+    fall(cube, this.scene.children);
     this.addMesh(cube);
   }
   onRemove(intersects: THREE.Intersection[]) {
@@ -116,7 +116,11 @@ class engine {
     } else if (type === 'right') {
       this.cameraMesh.translateX(StepLength);
     }
-    freeFall(this.cameraMesh, this.scene.children);
+    fall(this.cameraMesh, this.scene.children);
+  }
+  onJump() {
+    jump(this.cameraMesh, this.scene.children.filter(child => child !== this.cameraMesh));
+    fall(this.cameraMesh, this.scene.children.filter(child => child !== this.cameraMesh));
   }
   onShiftChange(isShiftDown: boolean) {
     this.state.isShiftDown = isShiftDown;

@@ -3,6 +3,7 @@ import bindClick from './bind-click';
 import bindHover from './bind-hover';
 import bindMove from './bind-move';
 import bindShift from './bind-shift';
+import bindJump from './bind-jump';
 import { ICommonParam } from '../interface';
 export interface IInteract extends ICommonParam {}
 function interact({
@@ -36,6 +37,12 @@ function interact({
     engine
   })
   bindShift({
+    scene,
+    camera,
+    renderer,
+    engine
+  })
+  bindJump({
     scene,
     camera,
     renderer,
