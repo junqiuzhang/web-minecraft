@@ -116,9 +116,7 @@ class engine {
       this.camera.translateX(StepLength);
     }
     this.cameraMesh.position.addVectors(this.camera.position, new THREE.Vector3(0, -0.5, 0));
-    if (isCrashedBottom(this.cameraMesh, this.scene.children)) {
-      this.camera.position.y = 1.5;
-    }
+    freeFall(this.cameraMesh, this.scene.children);
   }
   onShiftChange(isShiftDown: boolean) {
     this.state.isShiftDown = isShiftDown;
