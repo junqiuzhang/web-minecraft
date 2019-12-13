@@ -10,10 +10,7 @@ export function throttle(func: Function, wait: number) {
     }
   }
 }
-export function distance(x: number, y: number, z?: number) {
-  return Math.sqrt(x * x + y * y + z * z);
-}
-export function isCrashedRaycaster(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
+export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
   //中心点坐标
   const originPoint = target.position.clone();
   if (target.geometry instanceof THREE.Geometry) {
@@ -30,7 +27,7 @@ export function isCrashedRaycaster(target: THREE.Mesh, objects: THREE.Object3D[]
       //检测射线与多个物体相交的情况
       const intersects = ray.intersectObjects(objects, true);
       //获取第一个物体
-      const firstIntersectObject = this.getRealIntersect(intersects);
+      const firstIntersectObject = intersects[0];
       //如果物体存在且交点至中心的距离小于顶点至中心的距离，则发生碰撞
       if (firstIntersectObject && firstIntersectObject.distance < directionVector.length() + CrashDistance) {
         return true;
@@ -39,9 +36,13 @@ export function isCrashedRaycaster(target: THREE.Mesh, objects: THREE.Object3D[]
   }
   return false;
 }
-export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
-  for (let i = 0; i < objects.length; i++) {
-    if (target.position.distanceTo(objects[i].position) < CrashDistance + 0.5) {
+export function isCrashedBottom(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
+  const originPoint = target.position.clone();
+  if (target.geometry instanceof THREE.Geometry) {
+    const ray = new THREE.Raycaster(originPoint, new THREE.Vector3(0, -1, 0));
+    const intersects = ray.intersectObjects(objects, true);
+    const firstIntersectObject = intersects[0];
+    if (firstIntersectObject && firstIntersectObject.distance < CrashDistance + 0.5) {
       return true;
     }
   }
@@ -49,8 +50,12 @@ export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolea
 }
 export function freeFall(target: THREE.Mesh, objects: THREE.Object3D[]) {
   const pre = Date.now();
-  while (!isCrashed(target, objects)) {
-    const now = Date.now();
-    target.position.setY(target.position.y - (now - pre) * Gravity / 1000);
+  function render() {
+    if (!isCrashedBottom(target, objects)) {
+      requestAnimationFrame(render);
+      const now = Date.now();
+      target.position.setY(target.position.y - (now - pre) * Gravity / 5000);
+    }
   }
+  render();
 }

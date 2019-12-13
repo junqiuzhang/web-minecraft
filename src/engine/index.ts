@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
 import { StepLength } from '../constant';
-import { isCrashed, freeFall } from '../utils';
+import { isCrashed, isCrashedBottom, freeFall } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -74,6 +74,7 @@ class engine {
   }
   onCreate(intersects: THREE.Intersection[]) {
     const realIntersect = this.getRealIntersect(intersects);
+    if (!realIntersect) return;
     const { point, face } = realIntersect;
     const cube = new Cube();
     if (face instanceof THREE.Face3) {
@@ -87,6 +88,7 @@ class engine {
   }
   onRemove(intersects: THREE.Intersection[]) {
     const realIntersect = this.getRealIntersect(intersects);
+    if (!realIntersect) return;
     const { object } = realIntersect;
     if (object !== this.mesh && object !== this.grid && object instanceof THREE.Mesh) {
       this.removeMesh(object);
@@ -94,6 +96,7 @@ class engine {
   }
   onHover(intersects: THREE.Intersection[]) {
     const realIntersect = this.getRealIntersect(intersects);
+    if (!realIntersect) return;
     const { point, face } = realIntersect;
     if (face instanceof THREE.Face3) {
       this.overMesh.position.copy(point).add(face.normal.divideScalar(2));
@@ -113,7 +116,7 @@ class engine {
       this.camera.translateX(StepLength);
     }
     this.cameraMesh.position.addVectors(this.camera.position, new THREE.Vector3(0, -0.5, 0));
-    if (isCrashed(this.cameraMesh, this.scene.children)) {
+    if (isCrashedBottom(this.cameraMesh, this.scene.children)) {
       this.camera.position.y = 1.5;
     }
   }
