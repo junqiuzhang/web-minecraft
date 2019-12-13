@@ -20,7 +20,7 @@ Minecraft on the web platform, that based on `Three.js`.
 ## Todos
 - [x] remove object
 - [x] impact checking
-- [ ] gravity
+- [x] gravity
 - [ ] jump
 - [ ] light be changed for time
 - [ ] ground and water
