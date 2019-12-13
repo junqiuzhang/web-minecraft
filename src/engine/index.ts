@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
 import { StepLength } from '../constant';
-import { isCrashed } from '../utils';
+import { isCrashed, freeFall } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -82,6 +82,7 @@ class engine {
     } else {
       cube.position.copy(point.floor().addScalar(0.5));
     }
+    freeFall(cube, this.scene.children);
     this.addMesh(cube);
   }
   onRemove(intersects: THREE.Intersection[]) {

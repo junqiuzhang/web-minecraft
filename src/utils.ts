@@ -40,8 +40,10 @@ export function isCrashedRaycaster(target: THREE.Mesh, objects: THREE.Object3D[]
   return false;
 }
 export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
-  if (target.position.distanceTo(objects[0].position) < CrashDistance + 0.5) {
-    return true;
+  for (let i = 0; i < objects.length; i++) {
+    if (target.position.distanceTo(objects[i].position) < CrashDistance + 0.5) {
+      return true;
+    }
   }
   return false;
 }
@@ -51,5 +53,4 @@ export function freeFall(target: THREE.Mesh, objects: THREE.Object3D[]) {
     const now = Date.now();
     target.position.setY(target.position.y - (now - pre) * Gravity / 1000);
   }
-  target.position.setY(Math.floor(target.position.y));
 }
