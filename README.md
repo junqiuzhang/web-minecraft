@@ -21,7 +21,7 @@ Minecraft on the web platform, that based on `Three.js`.
 - [x] remove object
 - [x] impact checking
 - [x] gravity
-- [ ] jump
+- [x] jump
 - [ ] light be changed for time
 - [ ] ground and water
 - [ ] more material
