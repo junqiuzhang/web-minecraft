@@ -10,13 +10,7 @@ class Cube extends THREE.Mesh {
     const geometry = new THREE.BoxGeometry(1, 1, 1);
     const material = new THREE.MeshLambertMaterial({ color: color || 0x00ff00 });
     super(geometry, material);
-  }
-  rotate({
-    type = 'x',
-    angle = 90,
-    direction = false
-  }: IRotate) {
-    
+    this.name = 'cube';
   }
 }
 export default Cube;
