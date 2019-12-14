@@ -90,7 +90,7 @@ class engine {
       this.overMesh.position.copy(point.floor().addScalar(0.5));
     }
   }
-  private isCrashedMove(): boolean {
+  private isCameraCrashed(): boolean {
     const objects = filter(this.scene.children, [this.overMesh, this.ground, this.grid]);
     const direction = this.camera.getWorldDirection(new THREE.Vector3());
     const crashDistance = StepLength;
@@ -107,7 +107,7 @@ class engine {
     })
   }
   onMove(type: Direction) {
-    const isCrash = this.isCrashedMove();
+    const isCrash = this.isCameraCrashed();
     if (isCrash) return;
     if (type === 'up') {
       this.camera.translateZ(-StepLength);
