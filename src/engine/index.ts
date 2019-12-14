@@ -73,7 +73,11 @@ class engine {
     } else {
       cube.position.copy(point.floor().addScalar(0.5));
     }
-    fall(cube, this.scene.children);
+    fall({
+      target: cube, 
+      objects: this.scene.children, 
+      crashDistance: 0.5
+    });
     this.addMesh(cube);
   }
   onRemove(intersects: THREE.Intersection[]) {
@@ -105,11 +109,24 @@ class engine {
     } else if (type === 'right') {
       this.camera.translateX(StepLength);
     }
-    fall(this.camera, this.scene.children);
+    fall({
+      target: this.camera, 
+      objects: this.scene.children, 
+      crashDistance: 1.5
+    });
   }
   onJump() {
-    jump(this.camera, this.scene.children.filter(child => child !== this.camera));
-    fall(this.camera, this.scene.children.filter(child => child !== this.camera));
+    jump({
+      target: this.camera, 
+      objects: this.scene.children, 
+      crashDistance: 0.5
+    }).then(() => {
+      fall({
+        target: this.camera, 
+        objects: this.scene.children, 
+        crashDistance: 1.5
+      });
+    })
   }
   onShiftChange(isShiftDown: boolean) {
     this.state.isShiftDown = isShiftDown;

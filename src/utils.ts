@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import { CrashDistance, Gravity } from './constant';
+import { Gravity } from './constant';
 export function throttle(func: Function, wait: number) {
   let pre = Date.now();
   return (...args) => {
@@ -10,73 +10,147 @@ export function throttle(func: Function, wait: number) {
     }
   }
 }
-export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
-  const originPoint = target.position.clone();
+export function isCrashed({
+  objects,
+  position,
+  direction,
+  crashDistance
+}: {
+  objects: THREE.Object3D[],
+  position: THREE.Vector3,
+  direction: THREE.Vector3,
+  crashDistance: number
+}): boolean {
+  const ray = new THREE.Raycaster(position, direction);
+  const intersects = ray.intersectObjects(objects, true);
+  if (intersects[0] && intersects[0].distance <= crashDistance) {
+    return true;
+  }
+  return false;
+}
+export function isCrashedAll({
+  target,
+  objects,
+  crashDistance
+}: {
+  target: THREE.Mesh,
+  objects: THREE.Object3D[],
+  crashDistance: number
+}): boolean {
   if (target.geometry instanceof THREE.Geometry) {
-    const originVertices = target.geometry.vertices;
     for (let vertexIndex = 0; vertexIndex < target.geometry.vertices.length; vertexIndex++) {
-      const localVertex = originVertices[vertexIndex].clone();
+      const localVertex = target.geometry.vertices[vertexIndex].clone();
       const globalVertex = localVertex.applyMatrix4(target.matrix);
-      const directionVector = globalVertex.sub(target.position);
-      const ray = new THREE.Raycaster(originPoint, directionVector.clone().normalize());
-      const intersects = ray.intersectObjects(objects, true);
-      const firstIntersectObject = intersects[0];
-      if (firstIntersectObject && firstIntersectObject.distance < directionVector.length() + CrashDistance) {
-        return true;
+      const position = target.position.clone();
+      const direction = globalVertex.sub(target.position);
+      return isCrashed({
+        objects,
+        position,
+        direction,
+        crashDistance
+      });
+    }
+  }
+  return false;
+}
+export function isCrashedTop({
+  target,
+  objects,
+  crashDistance
+}: {
+  target: THREE.Object3D,
+  objects: THREE.Object3D[],
+  crashDistance: number
+}): boolean {
+  const position = target.position.clone();
+  const direction = new THREE.Vector3(0, 1, 0);
+  return isCrashed({
+    objects,
+    position,
+    direction,
+    crashDistance
+  })
+}
+export function isCrashedBottom({
+  target,
+  objects,
+  crashDistance
+}: {
+  target: THREE.Object3D,
+  objects: THREE.Object3D[],
+  crashDistance: number
+}): boolean {
+  const position = target.position.clone();
+  const direction = new THREE.Vector3(0, -1, 0);
+  return isCrashed({
+    objects,
+    position,
+    direction,
+    crashDistance
+  })
+}
+export function fall({
+  target,
+  objects,
+  crashDistance
+}: {
+  target: THREE.Object3D,
+  objects: THREE.Object3D[],
+  crashDistance: number
+}): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    const pre = Date.now();
+    function render() {
+      const now = Date.now();
+      const isCrash = isCrashedBottom({
+        target, 
+        objects, 
+        crashDistance
+      });
+      if (!isCrash) {
+        requestAnimationFrame(render);
+        target.position.setY(target.position.y - (now - pre) * Gravity / 50000);
+      } else {
+        target.position.setY(Math.round(target.position.y * 2) / 2);
+        resolve(true);
       }
     }
-  }
-  return false;
+    render();
+  })
 }
-export function isCrashedTop(target: THREE.Object3D, objects: THREE.Object3D[]): boolean {
-  const originPoint = target.position.clone();
-  const ray = new THREE.Raycaster(originPoint, new THREE.Vector3(0, 1, 0));
-  const intersects = ray.intersectObjects(objects, true);
-  const firstIntersectObject = intersects[0];
-  if (firstIntersectObject && firstIntersectObject.distance < CrashDistance + 0.5) {
-    return true;
-  }
-  return false;
-}
-export function isCrashedBottom(target: THREE.Object3D, objects: THREE.Object3D[]): boolean {
-  const originPoint = target.position.clone();
-  const ray = new THREE.Raycaster(originPoint, new THREE.Vector3(0, -1, 0));
-  const intersects = ray.intersectObjects(objects, true);
-  const firstIntersectObject = intersects[0];
-  if (firstIntersectObject && firstIntersectObject.distance < CrashDistance + 0.5) {
-    return true;
-  }
-  return false;
-}
-export function fall(target: THREE.Object3D, objects: THREE.Object3D[]) {
-  const pre = Date.now();
-  function render() {
-    const now = Date.now();
-    if (!isCrashedBottom(target, objects)) {
-      requestAnimationFrame(render);
-      target.position.setY(target.position.y - (now - pre) * Gravity / 5000);
-    } else {
-      target.position.setY(Math.round(target.position.y * 2) / 2);
+export function jump({
+  target,
+  objects,
+  crashDistance
+}: {
+  target: THREE.Object3D,
+  objects: THREE.Object3D[],
+  crashDistance: number
+}): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    const pre = Date.now();
+    let loopTime = 300;
+    function render() {
+      const now = Date.now();
+      const isCrash = isCrashedTop({
+        target, 
+        objects, 
+        crashDistance
+      });
+      if (now - pre < loopTime && !isCrash) {
+        requestAnimationFrame(render);
+        target.position.setY(target.position.y + loopTime * Gravity / 50000);
+      } else {
+        resolve(true);
+      }
     }
-  }
-  render();
-}
-export function jump(target: THREE.Object3D, objects: THREE.Object3D[]) {
-  const pre = Date.now();
-  let loopTime = 500;
-  function render() {
-    const now = Date.now();
-    if (now - pre <  loopTime && !isCrashedTop(target, objects)) {
-      requestAnimationFrame(render);
-      target.position.setY(target.position.y + loopTime * Gravity / 50000);
-    }
-  }
-  render();
+    render();
+  })
 }
 export function bindProperties(independentVec: Object, dependentVec: Object) {
   for (const key in independentVec) {
     if (typeof independentVec[key] === 'function') {
-      independentVec[key] = new Proxy(independentVec[key], {        
+      independentVec[key] = new Proxy(independentVec[key], {
         apply: function (target, thisArg, argArray) {
           target.apply(thisArg, argArray);
           dependentVec[key].apply(dependentVec, argArray);
