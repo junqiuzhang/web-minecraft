@@ -25,3 +25,4 @@ Minecraft on the web platform, that based on `Three.js`.
 - [ ] light be changed for time
 - [ ] ground and water
 - [ ] more material
+- [ ] persistence
