@@ -19,7 +19,7 @@ class engine {
   private overMesh: THREE.Mesh;
   private blacklist1: THREE.Object3D[];
   private blacklist3: THREE.Object3D[];
-  mesh: THREE.Mesh;
+  ground: THREE.Mesh;
   grid: THREE.GridHelper;
   constructor({
     scene,
@@ -44,7 +44,7 @@ class engine {
   }
   private mountBlacklist() {
     this.blacklist1 = [this.overMesh];
-    this.blacklist3 = [this.overMesh, this.mesh, this.grid];
+    this.blacklist3 = [this.overMesh, this.ground, this.grid];
   }
   add(target: THREE.Object3D) {
     this.scene.add(target);
@@ -88,7 +88,7 @@ class engine {
     const realIntersect = getRealIntersect(intersects, this.blacklist1);
     if (!realIntersect) return;
     const { object } = realIntersect;
-    if (object !== this.mesh && object !== this.grid && object instanceof THREE.Mesh) {
+    if (object !== this.ground && object !== this.grid && object instanceof THREE.Mesh) {
       this.removeMesh(object);
     }
   }
