@@ -17,7 +17,6 @@ class engine {
   private renderer: THREE.Renderer;
   private state: IState;
   private overMesh: THREE.Mesh;
-  private cameraMesh: THREE.Mesh;
   mesh: THREE.Mesh;
   grid: THREE.GridHelper;
   constructor({
@@ -32,7 +31,6 @@ class engine {
       isShiftDown: false
     }
     this.mountOverMesh();
-    this.mountCameraMesh();
   }
   private mountOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
@@ -40,15 +38,6 @@ class engine {
     const rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
     this.overMesh = rollOverMesh;
     this.addMesh(rollOverMesh);
-  }
-  private mountCameraMesh() {
-    const geometry = new THREE.BoxGeometry(1, 2, 1);
-    const material = new THREE.MeshLambertMaterial({ color: 0x000000, opacity: 0, transparent: true });
-    const cameraMesh = new THREE.Mesh(geometry, material);
-    this.cameraMesh = cameraMesh;
-    this.cameraMesh.position.copy(this.camera.position);
-    bindProperties(this.cameraMesh.position, this.camera.position);
-    this.addMesh(cameraMesh);
   }
   private getRealIntersect(intersects: THREE.Intersection[]) {
     return intersects.filter(intersect => intersect.object !== this.overMesh)[0];
@@ -107,20 +96,20 @@ class engine {
     }
   }
   onMove(type: Direction) {
-    // if (type === 'up') {
-    //   this.cameraMesh.translateZ(-StepLength);
-    // } else if (type === 'down') {
-    //   this.cameraMesh.translateZ(StepLength);
-    // } else if (type === 'left') {
-    //   this.cameraMesh.translateX(-StepLength);
-    // } else if (type === 'right') {
-    //   this.cameraMesh.translateX(StepLength);
-    // }
-    // fall(this.cameraMesh, this.scene.children);
+    if (type === 'up') {
+      this.camera.translateZ(-StepLength);
+    } else if (type === 'down') {
+      this.camera.translateZ(StepLength);
+    } else if (type === 'left') {
+      this.camera.translateX(-StepLength);
+    } else if (type === 'right') {
+      this.camera.translateX(StepLength);
+    }
+    fall(this.camera, this.scene.children);
   }
   onJump() {
-    jump(this.cameraMesh, this.scene.children.filter(child => child !== this.cameraMesh));
-    fall(this.cameraMesh, this.scene.children.filter(child => child !== this.cameraMesh));
+    jump(this.camera, this.scene.children.filter(child => child !== this.camera));
+    fall(this.camera, this.scene.children.filter(child => child !== this.camera));
   }
   onShiftChange(isShiftDown: boolean) {
     this.state.isShiftDown = isShiftDown;

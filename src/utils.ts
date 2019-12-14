@@ -28,31 +28,27 @@ export function isCrashed(target: THREE.Mesh, objects: THREE.Object3D[]): boolea
   }
   return false;
 }
-export function isCrashedTop(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
+export function isCrashedTop(target: THREE.Object3D, objects: THREE.Object3D[]): boolean {
   const originPoint = target.position.clone();
-  if (target.geometry instanceof THREE.Geometry) {
-    const ray = new THREE.Raycaster(originPoint, new THREE.Vector3(0, 1, 0));
-    const intersects = ray.intersectObjects(objects, true);
-    const firstIntersectObject = intersects[0];
-    if (firstIntersectObject && firstIntersectObject.distance < CrashDistance + 0.5) {
-      return true;
-    }
+  const ray = new THREE.Raycaster(originPoint, new THREE.Vector3(0, 1, 0));
+  const intersects = ray.intersectObjects(objects, true);
+  const firstIntersectObject = intersects[0];
+  if (firstIntersectObject && firstIntersectObject.distance < CrashDistance + 0.5) {
+    return true;
   }
   return false;
 }
-export function isCrashedBottom(target: THREE.Mesh, objects: THREE.Object3D[]): boolean {
+export function isCrashedBottom(target: THREE.Object3D, objects: THREE.Object3D[]): boolean {
   const originPoint = target.position.clone();
-  if (target.geometry instanceof THREE.Geometry) {
-    const ray = new THREE.Raycaster(originPoint, new THREE.Vector3(0, -1, 0));
-    const intersects = ray.intersectObjects(objects, true);
-    const firstIntersectObject = intersects[0];
-    if (firstIntersectObject && firstIntersectObject.distance < CrashDistance + 0.5) {
-      return true;
-    }
+  const ray = new THREE.Raycaster(originPoint, new THREE.Vector3(0, -1, 0));
+  const intersects = ray.intersectObjects(objects, true);
+  const firstIntersectObject = intersects[0];
+  if (firstIntersectObject && firstIntersectObject.distance < CrashDistance + 0.5) {
+    return true;
   }
   return false;
 }
-export function fall(target: THREE.Mesh, objects: THREE.Object3D[]) {
+export function fall(target: THREE.Object3D, objects: THREE.Object3D[]) {
   const pre = Date.now();
   function render() {
     const now = Date.now();
@@ -70,7 +66,7 @@ export function jump(target: THREE.Object3D, objects: THREE.Object3D[]) {
   let loopTime = 500;
   function render() {
     const now = Date.now();
-    if (now - pre < loopTime) {
+    if (now - pre <  loopTime && !isCrashedTop(target, objects)) {
       requestAnimationFrame(render);
       target.position.setY(target.position.y + loopTime * Gravity / 50000);
     }
