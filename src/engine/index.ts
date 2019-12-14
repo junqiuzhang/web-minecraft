@@ -3,6 +3,7 @@ import Cube from '../geometry/cube';
 import { StepLength } from '../constant';
 import { isCrashed, fall, jump, getRealIntersect, filter } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
+type Private = 'ground' | 'grid';
 interface IEngine {
   scene: THREE.Scene;
   camera: THREE.Camera;
@@ -17,8 +18,6 @@ class engine {
   private renderer: THREE.Renderer;
   private state: IState;
   private overMesh: THREE.Mesh;
-  private blacklist1: THREE.Object3D[];
-  private blacklist3: THREE.Object3D[];
   ground: THREE.Mesh;
   grid: THREE.GridHelper;
   constructor({
@@ -33,30 +32,19 @@ class engine {
       isShiftDown: false
     }
     this.mountOverMesh();
-    this.mountBlacklist();
   }
   private mountOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
     const rollOverMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0.5, transparent: true });
     const rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
     this.overMesh = rollOverMesh;
-    this.addMesh(rollOverMesh);
-  }
-  private mountBlacklist() {
-    this.blacklist1 = [this.overMesh];
-    this.blacklist3 = [this.overMesh, this.ground, this.grid];
+    this.add(rollOverMesh);
   }
   add(target: THREE.Object3D) {
     this.scene.add(target);
   }
   remove(target: THREE.Object3D) {
     this.scene.remove(target);
-  }
-  addMesh(target: THREE.Mesh) {
-    this.add(target);
-  }
-  removeMesh(target: THREE.Mesh) {
-    this.remove(target);
   }
   onClick(intersects: THREE.Intersection[]) {
     const { isShiftDown } = this.state;
@@ -67,7 +55,7 @@ class engine {
     }
   }
   onCreate(intersects: THREE.Intersection[]) {
-    const realIntersect = getRealIntersect(intersects, this.blacklist1);
+    const realIntersect = getRealIntersect(intersects, [this.overMesh]);
     if (!realIntersect) return;
     const { point, face } = realIntersect;
     const cube = new Cube();
@@ -82,18 +70,18 @@ class engine {
       objects: this.scene.children, 
       crashDistance: 0.5
     });
-    this.addMesh(cube);
+    this.add(cube);
   }
   onRemove(intersects: THREE.Intersection[]) {
-    const realIntersect = getRealIntersect(intersects, this.blacklist1);
+    const realIntersect = getRealIntersect(intersects, [this.overMesh]);
     if (!realIntersect) return;
     const { object } = realIntersect;
     if (object !== this.ground && object !== this.grid && object instanceof THREE.Mesh) {
-      this.removeMesh(object);
+      this.remove(object);
     }
   }
   onHover(intersects: THREE.Intersection[]) {
-    const realIntersect = getRealIntersect(intersects, this.blacklist1);
+    const realIntersect = getRealIntersect(intersects, [this.overMesh]);
     if (!realIntersect) return;
     const { point, face } = realIntersect;
     if (face instanceof THREE.Face3) {
@@ -103,11 +91,11 @@ class engine {
       this.overMesh.position.copy(point.floor().addScalar(0.5));
     }
   }
-  onMove(type: Direction) {
-    const objects = filter(this.scene.children, this.blacklist3);
+  private isCrashedMove(): boolean {
+    const objects = filter(this.scene.children, [this.overMesh, this.ground, this.grid]);
     const direction = this.camera.getWorldDirection(new THREE.Vector3());
     const crashDistance = StepLength;
-    const isCrash = isCrashed({
+    return isCrashed({
       objects,
       direction,
       crashDistance,
@@ -118,6 +106,9 @@ class engine {
       crashDistance,
       position: new THREE.Vector3(this.camera.position.x, this.camera.position.y - 1, this.camera.position.z),
     })
+  }
+  onMove(type: Direction) {
+    const isCrash = this.isCrashedMove();
     if (isCrash) return;
     if (type === 'up') {
       this.camera.translateZ(-StepLength);

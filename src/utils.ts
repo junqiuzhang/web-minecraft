@@ -24,8 +24,6 @@ export function isCrashed({
   const ray = new THREE.Raycaster(position, direction);
   const intersects = ray.intersectObjects(objects);
   if (intersects[0] && intersects[0].distance <= crashDistance) {
-    console.log(intersects[0], crashDistance);
-    
     return true;
   }
   return false;
