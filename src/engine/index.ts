@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
 import { StepLength } from '../constant';
-import { fall, jump } from '../utils';
+import { isCrashed, fall, jump, getRealIntersect, filter } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -17,6 +17,8 @@ class engine {
   private renderer: THREE.Renderer;
   private state: IState;
   private overMesh: THREE.Mesh;
+  private blacklist1: THREE.Object3D[];
+  private blacklist3: THREE.Object3D[];
   mesh: THREE.Mesh;
   grid: THREE.GridHelper;
   constructor({
@@ -31,6 +33,7 @@ class engine {
       isShiftDown: false
     }
     this.mountOverMesh();
+    this.mountBlacklist();
   }
   private mountOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
@@ -39,8 +42,9 @@ class engine {
     this.overMesh = rollOverMesh;
     this.addMesh(rollOverMesh);
   }
-  private getRealIntersect(intersects: THREE.Intersection[]) {
-    return intersects.filter(intersect => intersect.object !== this.overMesh)[0];
+  private mountBlacklist() {
+    this.blacklist1 = [this.overMesh];
+    this.blacklist3 = [this.overMesh, this.mesh, this.grid];
   }
   add(target: THREE.Object3D) {
     this.scene.add(target);
@@ -63,7 +67,7 @@ class engine {
     }
   }
   onCreate(intersects: THREE.Intersection[]) {
-    const realIntersect = this.getRealIntersect(intersects);
+    const realIntersect = getRealIntersect(intersects, this.blacklist1);
     if (!realIntersect) return;
     const { point, face } = realIntersect;
     const cube = new Cube();
@@ -81,7 +85,7 @@ class engine {
     this.addMesh(cube);
   }
   onRemove(intersects: THREE.Intersection[]) {
-    const realIntersect = this.getRealIntersect(intersects);
+    const realIntersect = getRealIntersect(intersects, this.blacklist1);
     if (!realIntersect) return;
     const { object } = realIntersect;
     if (object !== this.mesh && object !== this.grid && object instanceof THREE.Mesh) {
@@ -89,7 +93,7 @@ class engine {
     }
   }
   onHover(intersects: THREE.Intersection[]) {
-    const realIntersect = this.getRealIntersect(intersects);
+    const realIntersect = getRealIntersect(intersects, this.blacklist1);
     if (!realIntersect) return;
     const { point, face } = realIntersect;
     if (face instanceof THREE.Face3) {
@@ -100,6 +104,21 @@ class engine {
     }
   }
   onMove(type: Direction) {
+    const objects = filter(this.scene.children, this.blacklist3);
+    const direction = this.camera.getWorldDirection(new THREE.Vector3());
+    const crashDistance = StepLength;
+    const isCrash = isCrashed({
+      objects,
+      direction,
+      crashDistance,
+      position: this.camera.position,
+    }) || isCrashed({
+      objects,
+      direction,
+      crashDistance,
+      position: new THREE.Vector3(this.camera.position.x, this.camera.position.y - 1, this.camera.position.z),
+    })
+    if (isCrash) return;
     if (type === 'up') {
       this.camera.translateZ(-StepLength);
     } else if (type === 'down') {
@@ -116,9 +135,11 @@ class engine {
     });
   }
   onJump() {
+    const target = this.camera;
+    const objects = this.scene.children
     jump({
-      target: this.camera, 
-      objects: this.scene.children, 
+      target, 
+      objects, 
       crashDistance: 0.5
     }).then(() => {
       fall({

@@ -22,8 +22,10 @@ export function isCrashed({
   crashDistance: number
 }): boolean {
   const ray = new THREE.Raycaster(position, direction);
-  const intersects = ray.intersectObjects(objects, true);
+  const intersects = ray.intersectObjects(objects);
   if (intersects[0] && intersects[0].distance <= crashDistance) {
+    console.log(intersects[0], crashDistance);
+    
     return true;
   }
   return false;
@@ -156,6 +158,22 @@ export function bindProperties(independentVec: Object, dependentVec: Object) {
           dependentVec[key].apply(dependentVec, argArray);
         }
       })
+    } else {
+      independentVec[key] = new Proxy(independentVec[key], {
+        set: function (target, p, value, receiver) {
+          dependentVec[key] = value;
+          return true;
+        }
+      })
     }
   }
+}
+export function filter(objects: THREE.Object3D[], blacklist: THREE.Object3D[]): THREE.Object3D[] {
+  return objects.filter(object => blacklist.reduce((pre, cur) => pre && cur !== object, true));
+}
+export function filterIntersect(intersects: THREE.Intersection[], blacklist: THREE.Object3D[]): THREE.Intersection[] {
+  return intersects.filter(intersect => blacklist.reduce((pre, cur) => pre && cur !== intersect.object, true));
+}
+export function getRealIntersect(intersects: THREE.Intersection[], blacklist: THREE.Object3D[]): THREE.Intersection | undefined {
+  return intersects.filter(intersect => blacklist.reduce((pre, cur) => pre && cur !== intersect.object, true))[0];
 }
