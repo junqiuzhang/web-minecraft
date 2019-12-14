@@ -107,16 +107,16 @@ class engine {
     }
   }
   onMove(type: Direction) {
-    if (type === 'up') {
-      this.cameraMesh.translateZ(-StepLength);
-    } else if (type === 'down') {
-      this.cameraMesh.translateZ(StepLength);
-    } else if (type === 'left') {
-      this.cameraMesh.translateX(-StepLength);
-    } else if (type === 'right') {
-      this.cameraMesh.translateX(StepLength);
-    }
-    fall(this.cameraMesh, this.scene.children);
+    // if (type === 'up') {
+    //   this.cameraMesh.translateZ(-StepLength);
+    // } else if (type === 'down') {
+    //   this.cameraMesh.translateZ(StepLength);
+    // } else if (type === 'left') {
+    //   this.cameraMesh.translateX(-StepLength);
+    // } else if (type === 'right') {
+    //   this.cameraMesh.translateX(StepLength);
+    // }
+    // fall(this.cameraMesh, this.scene.children);
   }
   onJump() {
     jump(this.cameraMesh, this.scene.children.filter(child => child !== this.cameraMesh));
