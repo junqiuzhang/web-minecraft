@@ -23,7 +23,7 @@ Minecraft on the web platform, that based on `Three.js`.
 - [x] impact checking
 - [x] gravity
 - [x] jump
+- [ ] persistence
 - [ ] light changed for time
 - [ ] ground and water
 - [ ] more material
-- [ ] persistence
