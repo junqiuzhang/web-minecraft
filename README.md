@@ -17,6 +17,7 @@ Minecraft on the web platform, that based on `Three.js`.
 - Click to create a cube
 - Click with shift down to remove the cube
 - Press WASD key or Arrow key to move position
+- Press Space to jump
 ## Todos
 - [x] remove object
 - [x] impact checking
