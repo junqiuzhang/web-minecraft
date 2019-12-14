@@ -59,6 +59,8 @@ export function fall(target: THREE.Mesh, objects: THREE.Object3D[]) {
     if (!isCrashedBottom(target, objects)) {
       requestAnimationFrame(render);
       target.position.setY(target.position.y - (now - pre) * Gravity / 5000);
+    } else {
+      target.position.setY(Math.round(target.position.y * 2) / 2);
     }
   }
   render();
