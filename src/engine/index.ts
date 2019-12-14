@@ -3,7 +3,6 @@ import Cube from '../geometry/cube';
 import { StepLength } from '../constant';
 import { isCrashed, fall, jump, getRealIntersect, filter } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
-type Private = 'ground' | 'grid';
 interface IEngine {
   scene: THREE.Scene;
   camera: THREE.Camera;
