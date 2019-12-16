@@ -172,6 +172,3 @@ export function filter(objects: THREE.Object3D[], blacklist: THREE.Object3D[]): 
 export function filterIntersect(intersects: THREE.Intersection[], blacklist: THREE.Object3D[]): THREE.Intersection[] {
   return intersects.filter(intersect => blacklist.reduce((pre, cur) => pre && cur !== intersect.object, true));
 }
-export function getRealIntersect(intersects: THREE.Intersection[], blacklist: THREE.Object3D[]): THREE.Intersection | undefined {
-  return intersects.filter(intersect => blacklist.reduce((pre, cur) => pre && cur !== intersect.object, true))[0];
-}

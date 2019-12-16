@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
 import { StepLength } from '../constant';
-import { isCrashed, fall, jump, getRealIntersect, filter } from '../utils';
+import { isCrashed, fall, jump, filter, filterIntersect } from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -46,17 +46,17 @@ class engine {
     this.scene.remove(target);
   }
   onClick(intersects: THREE.Intersection[]) {
+    const realIntersect = filterIntersect(intersects, [this.overMesh])[0];
+    if (!realIntersect) return;
     const { isShiftDown } = this.state;
     if (!isShiftDown) {
-      this.onCreate(intersects);
+      this.onCreate(realIntersect);
     } else {
-      this.onRemove(intersects);
+      this.onRemove(realIntersect);
     }
   }
-  onCreate(intersects: THREE.Intersection[]) {
-    const realIntersect = getRealIntersect(intersects, [this.overMesh]);
-    if (!realIntersect) return;
-    const { point, face } = realIntersect;
+  onCreate(intersect: THREE.Intersection) {
+    const { point, face } = intersect;
     const cube = new Cube();
     if (face instanceof THREE.Face3) {
       cube.position.copy(point).add(face.normal.divideScalar(2));
@@ -71,16 +71,14 @@ class engine {
     });
     this.add(cube);
   }
-  onRemove(intersects: THREE.Intersection[]) {
-    const realIntersect = getRealIntersect(intersects, [this.overMesh]);
-    if (!realIntersect) return;
-    const { object } = realIntersect;
+  onRemove(intersect: THREE.Intersection) {
+    const { object } = intersect;
     if (object !== this.ground && object !== this.grid && object instanceof THREE.Mesh) {
       this.remove(object);
     }
   }
   onHover(intersects: THREE.Intersection[]) {
-    const realIntersect = getRealIntersect(intersects, [this.overMesh]);
+    const realIntersect = filterIntersect(intersects, [this.overMesh])[0];
     if (!realIntersect) return;
     const { point, face } = realIntersect;
     if (face instanceof THREE.Face3) {
