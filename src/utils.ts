@@ -172,27 +172,44 @@ export function filter(objects: THREE.Object3D[], blacklist: THREE.Object3D[]): 
 export function filterIntersect(intersects: THREE.Intersection[], blacklist: THREE.Object3D[]): THREE.Intersection[] {
   return intersects.filter(intersect => blacklist.reduce((pre, cur) => pre && cur !== intersect.object, true));
 }
-export function openIndexedDB(name: string, version?: number): Promise<IDBDatabase> {
+export function openIndexedDB(name: string, version?: number): Promise<{
+  type: string;
+  dataBase: IDBDatabase;
+}> {
   return new Promise((resolve, reject) => {
     const request = window.indexedDB.open(name, version);
     request.onsuccess = function (event) {
-      resolve(request.result);
+      resolve({
+        type: event.type,
+        ///@ts-ignore
+        dataBase: event.target.result
+      });
       console.log(event);
     };
     request.onerror = function (event) {
       console.log(event);
     };
+    request.onupgradeneeded = function (event) {
+      resolve({
+        type: event.type,
+        ///@ts-ignore
+        dataBase: event.target.result
+      });
+      console.log(event);
+    };
   });
 }
-export function openObjectStore(db: IDBDatabase, name: string, key?: string): IDBObjectStore {
-  let objectStore = db.transaction([name]).objectStore(name);
-  if (!db.objectStoreNames.contains(name)) {
-    objectStore = db.createObjectStore(name, { 
-      keyPath: key,
-      autoIncrement: !key
-    })
+export function createObjectStore(db: IDBDatabase, name: string, key?: string): IDBObjectStore {
+  return db.createObjectStore(name, { keyPath: key, autoIncrement: !key });
+}
+export function readObjectStore(db: IDBDatabase, name: string, key?: string): IDBObjectStore {
+  return db.transaction([name]).objectStore(name);
+}
+export function openObjectStore({ type, dataBase }: { type: string; dataBase: IDBDatabase; }, name: string, key?: string) {
+  if (type === 'success') {
+    return readObjectStore(dataBase, name, key);
   }
-  return objectStore;
+  return createObjectStore(dataBase, name, key);
 }
 export function write(objectStore: IDBObjectStore, object: any): Promise<void> {
   return new Promise((resolve, reject) => {
