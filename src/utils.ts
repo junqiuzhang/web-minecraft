@@ -172,3 +172,53 @@ export function filter(objects: THREE.Object3D[], blacklist: THREE.Object3D[]): 
 export function filterIntersect(intersects: THREE.Intersection[], blacklist: THREE.Object3D[]): THREE.Intersection[] {
   return intersects.filter(intersect => blacklist.reduce((pre, cur) => pre && cur !== intersect.object, true));
 }
+export function openIndexedDB(name: string, version?: number): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const request = window.indexedDB.open(name, version);
+    request.onsuccess = function (event) {
+      resolve(request.result);
+      console.log(event);
+    };
+    request.onerror = function (event) {
+      console.log(event);
+    };
+  });
+}
+export function openObjectStore(db: IDBDatabase, name: string, key?: string): IDBObjectStore {
+  let objectStore = db.transaction([name]).objectStore(name);
+  if (!db.objectStoreNames.contains(name)) {
+    objectStore = db.createObjectStore(name, { 
+      keyPath: key,
+      autoIncrement: !key
+    })
+  }
+  return objectStore;
+}
+export function write(objectStore: IDBObjectStore, object: any): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const request = objectStore.get(object.key);
+    request.onsuccess = function(event) {
+      if (request.result) {
+        objectStore.put(object);
+      } else {
+        objectStore.add(object);
+      }
+      console.log(event);
+    };
+    request.onerror = function(event) {
+      console.log(event);
+    };
+  })
+}
+export function read(objectStore: IDBObjectStore, func: Function) {
+  objectStore.openCursor().onsuccess = function (event) {
+    ///@ts-ignore
+    const cursor = event.target.result;
+    if (cursor) {
+      func(cursor);
+      cursor.continue();
+    } else {
+      console.log(event);
+    }
+  };
+}

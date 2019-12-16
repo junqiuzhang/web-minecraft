@@ -8,3 +8,7 @@ export const KeyDownWaitTime = 16;
 export const StepLength = 0.2;
 export const CrashDistance = 0.1;
 export const Gravity = 9.8;
+export const IndexedDBName = 'minecraft';
+export const IndexedDBVersion = 1;
+export const IndexedDBObjectStoreName = 'cube';
+export const IndexedDBObjectStoreKey = 'key';

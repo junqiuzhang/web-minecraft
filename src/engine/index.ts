@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import Cube from '../geometry/cube';
-import { StepLength } from '../constant';
-import { isCrashed, fall, jump, filter, filterIntersect } from '../utils';
+import * as Constants from '../constant';
+import * as Utils from '../utils';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
@@ -11,12 +11,17 @@ interface IEngine {
 interface IState {
   isShiftDown: boolean;
 }
+interface IObjectStore extends IDBObjectStore {
+  readObj?: (func: Function) => void;
+  writeObj?: (object: any) => Promise<void>;
+};
 class engine {
   private scene: THREE.Scene;
   private camera: THREE.Camera;
   private renderer: THREE.Renderer;
   private state: IState;
   private overMesh: THREE.Mesh;
+  private objectStore: IObjectStore;
   ground: THREE.Mesh;
   grid: THREE.GridHelper;
   constructor({
@@ -31,6 +36,7 @@ class engine {
       isShiftDown: false
     }
     this.mountOverMesh();
+    this.mountObjectStore();
   }
   private mountOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
@@ -39,6 +45,12 @@ class engine {
     this.overMesh = rollOverMesh;
     this.add(rollOverMesh);
   }
+  private async mountObjectStore() {
+    const objStore = await Utils.openIndexedDB(Constants.IndexedDBName).then((db) => Utils.openObjectStore(db, Constants.IndexedDBObjectStoreName, Constants.IndexedDBObjectStoreKey));
+    this.objectStore = objStore;
+    this.objectStore.readObj = (func) => Utils.read(objStore, func);
+    this.objectStore.writeObj = (obj) => Utils.write(objStore, obj);
+  }
   add(target: THREE.Object3D) {
     this.scene.add(target);
   }
@@ -46,7 +58,7 @@ class engine {
     this.scene.remove(target);
   }
   onClick(intersects: THREE.Intersection[]) {
-    const realIntersect = filterIntersect(intersects, [this.overMesh])[0];
+    const realIntersect = Utils.filterIntersect(intersects, [this.overMesh])[0];
     if (!realIntersect) return;
     const { isShiftDown } = this.state;
     if (!isShiftDown) {
@@ -64,7 +76,7 @@ class engine {
     } else {
       cube.position.copy(point.floor().addScalar(0.5));
     }
-    fall({
+    Utils.fall({
       target: cube, 
       objects: this.scene.children, 
       crashDistance: 0.5
@@ -78,7 +90,7 @@ class engine {
     }
   }
   onHover(intersects: THREE.Intersection[]) {
-    const realIntersect = filterIntersect(intersects, [this.overMesh])[0];
+    const realIntersect = Utils.filterIntersect(intersects, [this.overMesh])[0];
     if (!realIntersect) return;
     const { point, face } = realIntersect;
     if (face instanceof THREE.Face3) {
@@ -89,15 +101,15 @@ class engine {
     }
   }
   private isCameraCrashed(): boolean {
-    const objects = filter(this.scene.children, [this.overMesh, this.ground, this.grid]);
+    const objects = Utils.filter(this.scene.children, [this.overMesh, this.ground, this.grid]);
     const direction = this.camera.getWorldDirection(new THREE.Vector3());
-    const crashDistance = StepLength;
-    return isCrashed({
+    const crashDistance = Constants.StepLength;
+    return Utils.isCrashed({
       objects,
       direction,
       crashDistance,
       position: this.camera.position,
-    }) || isCrashed({
+    }) || Utils.isCrashed({
       objects,
       direction,
       crashDistance,
@@ -108,15 +120,15 @@ class engine {
     const isCrash = this.isCameraCrashed();
     if (isCrash) return;
     if (type === 'up') {
-      this.camera.translateZ(-StepLength);
+      this.camera.translateZ(-Constants.StepLength);
     } else if (type === 'down') {
-      this.camera.translateZ(StepLength);
+      this.camera.translateZ(Constants.StepLength);
     } else if (type === 'left') {
-      this.camera.translateX(-StepLength);
+      this.camera.translateX(-Constants.StepLength);
     } else if (type === 'right') {
-      this.camera.translateX(StepLength);
+      this.camera.translateX(Constants.StepLength);
     }
-    fall({
+    Utils.fall({
       target: this.camera, 
       objects: this.scene.children, 
       crashDistance: 1.5
@@ -125,12 +137,12 @@ class engine {
   onJump() {
     const target = this.camera;
     const objects = this.scene.children
-    jump({
+    Utils.jump({
       target, 
       objects, 
       crashDistance: 0.5
     }).then(() => {
-      fall({
+      Utils.fall({
         target: this.camera, 
         objects: this.scene.children, 
         crashDistance: 1.5
