@@ -31,10 +31,10 @@ class engine {
     this.state = {
       isShiftDown: false
     }
-    this.mountOverMesh();
+    this.mountOverCube();
     this.mountIndexedDB();
   }
-  private mountOverMesh() {
+  private mountOverCube() {
     const cube = new Cube({ color: 0xff0000, opacity: 0.5, transparent: true });
     this.overCube = cube;
     this.add(cube);
@@ -51,11 +51,11 @@ class engine {
       Utils.read({
         db: this.indexedDB,
         name: Constants.IndexedDBObjectStoreName,
-        func: this.mountMesh.bind(this)
+        func: this.mountCube.bind(this)
       })
     })
   }
-  private mountMesh(cursor: { key: string, cube: Cube }) {
+  private mountCube(cursor: { key: string, cube: Cube }) {
     const cube = new Cube();
     cube.position.copy(Utils.getPosition(cursor.key));
     this.add(cube);
