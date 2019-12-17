@@ -50,7 +50,7 @@ class engine {
     }).then((event) => {
       ///@ts-ignore
       this.indexedDB = event.target.result;
-      Utils.readAll({
+      Utils.read({
         db: this.indexedDB,
         name: Constants.IndexedDBObjectStoreName,
         func: this.mountMesh.bind(this)

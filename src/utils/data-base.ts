@@ -35,41 +35,6 @@ export function initDataBase({
     };
   });
 }
-export function read({
-  db,
-  name,
-  obj
-}: {
-  db: IDBDatabase,
-  name: string,
-  obj: any
-}): Promise<Event> {
-  const transaction = db.transaction([name]);
-  const objectStore = transaction.objectStore(name);
-  const request = objectStore.get(obj.key);
-  return subscribe(request);
-}
-export function readAll({
-  db,
-  name,
-  func
-}: {
-  db: IDBDatabase,
-  name: string,
-  func: Function
-}) {
-  const request = db.transaction(name)
-    .objectStore(name)
-    .openCursor();
-  request.onsuccess = function (event) {
-    ///@ts-ignore
-    const cursor = event.target.result;
-    if (cursor) {
-      func(cursor);
-      cursor.continue();
-    }
-  };
-}
 export function add({
   db,
   name,
@@ -98,6 +63,20 @@ export function remove({
     .delete(obj.key);
   return subscribe(request);
 }
+export function get({
+  db,
+  name,
+  obj
+}: {
+  db: IDBDatabase,
+  name: string,
+  obj: any
+}): Promise<Event> {
+  const transaction = db.transaction([name]);
+  const objectStore = transaction.objectStore(name);
+  const request = objectStore.get(obj.key);
+  return subscribe(request);
+}
 export function put({
   db,
   name,
@@ -112,12 +91,33 @@ export function put({
     .put(obj);
   return subscribe(request);
 }
+export function read({
+  db,
+  name,
+  func
+}: {
+  db: IDBDatabase,
+  name: string,
+  func: Function
+}) {
+  const request = db.transaction(name)
+    .objectStore(name)
+    .openCursor();
+  request.onsuccess = function (event) {
+    ///@ts-ignore
+    const cursor = event.target.result;
+    if (cursor) {
+      func(cursor);
+      cursor.continue();
+    }
+  };
+}
 export function write(param: {
   db: IDBDatabase,
   name: string,
   obj: any
 }): Promise<boolean> {
-  return read(param)
+  return get(param)
     .then((event) => {
       if (event.type === 'success') {
         return put(param);
