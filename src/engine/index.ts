@@ -16,7 +16,7 @@ class engine {
   private camera: THREE.Camera;
   private renderer: THREE.Renderer;
   private state: IState;
-  private overMesh: THREE.Mesh;
+  private overCube: THREE.Mesh;
   private indexedDB: IDBDatabase;
   ground: THREE.Mesh;
   grid: THREE.GridHelper;
@@ -35,11 +35,9 @@ class engine {
     this.mountIndexedDB();
   }
   private mountOverMesh() {
-    const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
-    const rollOverMaterial = new THREE.MeshBasicMaterial({ color: 0xff0000, opacity: 0.5, transparent: true });
-    const rollOverMesh = new THREE.Mesh(rollOverGeo, rollOverMaterial);
-    this.overMesh = rollOverMesh;
-    this.add(rollOverMesh);
+    const cube = new Cube({ color: 0xff0000, opacity: 0.5, transparent: true });
+    this.overCube = cube;
+    this.add(cube);
   }
   private async mountIndexedDB() {
     Utils.initDataBase({
@@ -69,7 +67,7 @@ class engine {
     this.scene.remove(target);
   }
   onClick(intersects: THREE.Intersection[]) {
-    const realIntersect = Utils.filterIntersect(intersects, [this.overMesh])[0];
+    const realIntersect = Utils.filterIntersect(intersects, [this.overCube])[0];
     if (!realIntersect) return;
     const { isShiftDown } = this.state;
     if (!isShiftDown) {
@@ -117,18 +115,18 @@ class engine {
     }
   }
   onHover(intersects: THREE.Intersection[]) {
-    const realIntersect = Utils.filterIntersect(intersects, [this.overMesh])[0];
+    const realIntersect = Utils.filterIntersect(intersects, [this.overCube])[0];
     if (!realIntersect) return;
     const { point, face } = realIntersect;
     if (face instanceof THREE.Face3) {
-      this.overMesh.position.copy(point).add(face.normal.divideScalar(2));
-      this.overMesh.position.floor().addScalar(0.5);
+      this.overCube.position.copy(point).add(face.normal.divideScalar(2));
+      this.overCube.position.floor().addScalar(0.5);
     } else {
-      this.overMesh.position.copy(point.floor().addScalar(0.5));
+      this.overCube.position.copy(point.floor().addScalar(0.5));
     }
   }
   private isCameraCrashed(): boolean {
-    const objects = Utils.filter(this.scene.children, [this.overMesh, this.ground, this.grid]);
+    const objects = Utils.filter(this.scene.children, [this.overCube, this.ground, this.grid]);
     const direction = this.camera.getWorldDirection(new THREE.Vector3());
     const crashDistance = Constants.StepLength;
     return Utils.isCrashed({
