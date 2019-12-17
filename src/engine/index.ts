@@ -11,17 +11,13 @@ interface IEngine {
 interface IState {
   isShiftDown: boolean;
 }
-interface IObjectStore extends IDBObjectStore {
-  readObj?: (func: Function) => void;
-  writeObj?: (object: any) => Promise<void>;
-};
 class engine {
   private scene: THREE.Scene;
   private camera: THREE.Camera;
   private renderer: THREE.Renderer;
   private state: IState;
   private overMesh: THREE.Mesh;
-  private objectStore: IObjectStore;
+  private indexedDB: IDBDatabase;
   ground: THREE.Mesh;
   grid: THREE.GridHelper;
   constructor({
@@ -36,7 +32,7 @@ class engine {
       isShiftDown: false
     }
     this.mountOverMesh();
-    this.mountObjectStore();
+    this.mountIndexedDB();
   }
   private mountOverMesh() {
     const rollOverGeo = new THREE.BoxBufferGeometry(1, 1, 1);
@@ -45,11 +41,16 @@ class engine {
     this.overMesh = rollOverMesh;
     this.add(rollOverMesh);
   }
-  private async mountObjectStore() {
-    const objStore = await Utils.openIndexedDB(Constants.IndexedDBName).then((db) => Utils.openObjectStore(db, Constants.IndexedDBObjectStoreName, Constants.IndexedDBObjectStoreKey));
-    this.objectStore = objStore;
-    this.objectStore.readObj = (func) => Utils.read(objStore, func);
-    this.objectStore.writeObj = (obj) => Utils.write(objStore, obj);
+  private async mountIndexedDB() {
+    Utils.initDataBase({
+      dbName: Constants.IndexedDBName,
+      dbVersion: Constants.IndexedDBVersion,
+      osName: Constants.IndexedDBObjectStoreName,
+      osKey: Constants.IndexedDBObjectStoreKey
+    }).then((event) => {
+      ///@ts-ignore
+      this.indexedDB = event.target.result;
+    })
   }
   add(target: THREE.Object3D) {
     this.scene.add(target);
