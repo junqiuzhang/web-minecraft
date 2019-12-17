@@ -50,7 +50,17 @@ class engine {
     }).then((event) => {
       ///@ts-ignore
       this.indexedDB = event.target.result;
+      Utils.readAll({
+        db: this.indexedDB,
+        name: Constants.IndexedDBObjectStoreName,
+        func: this.mountMesh.bind(this)
+      })
     })
+  }
+  private mountMesh(cursor: { key: string, cube: Cube }) {
+    const cube = new Cube();
+    cube.position.copy(Utils.getPosition(cursor.key));
+    this.add(cube);
   }
   add(target: THREE.Object3D) {
     this.scene.add(target);
@@ -83,11 +93,27 @@ class engine {
       crashDistance: 0.5
     });
     this.add(cube);
+    Utils.write({
+      db: this.indexedDB,
+      name: Constants.IndexedDBObjectStoreName,
+      obj: {
+        key: Utils.getKey(cube.position),
+        cube: Utils.cloneProperties(cube)
+      }
+    })
   }
   onRemove(intersect: THREE.Intersection) {
     const { object } = intersect;
     if (object !== this.ground && object !== this.grid && object instanceof THREE.Mesh) {
       this.remove(object);
+      Utils.remove({
+        db: this.indexedDB,
+        name: Constants.IndexedDBObjectStoreName,
+        obj: {
+          key: Utils.getKey(object.position),
+          cube: object
+        }
+      })
     }
   }
   onHover(intersects: THREE.Intersection[]) {

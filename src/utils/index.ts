@@ -1,4 +1,3 @@
-import * as THREE from 'three';
 export * from './data-base';
 export * from './engine';
 export function throttle(func: Function, wait: number) {
@@ -11,7 +10,6 @@ export function throttle(func: Function, wait: number) {
     }
   }
 }
-
 export function bindProperties(independentVec: Object, dependentVec: Object) {
   for (const key in independentVec) {
     if (typeof independentVec[key] === 'function') {
@@ -30,4 +28,15 @@ export function bindProperties(independentVec: Object, dependentVec: Object) {
       })
     }
   }
+}
+export function cloneProperties(obj: Object) {
+  let resObj = {};
+  for (const key in obj) {
+    if (typeof obj[key] !== 'function') {
+      if (typeof obj[key] !== 'object') {
+        resObj[key] = obj[key];
+      }
+    }
+  }
+  return resObj;
 }
