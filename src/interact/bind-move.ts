@@ -14,7 +14,7 @@ function handleKeyDown({
     } else if (keyCode === 37 || keyCode === 65) {
       engine.onMove('left')
     } else if (keyCode === 39 || keyCode === 68) {
-      engine.onMove('down')
+      engine.onMove('right')
     }
   }, KeyDownWaitTime)
 }
