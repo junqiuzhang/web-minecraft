@@ -39,6 +39,11 @@ class engine {
     this.overCube = cube;
     this.add(cube);
   }
+  private mountCube(cursor: { key: string, cube: Cube }) {
+    const cube = new Cube();
+    cube.position.copy(Utils.getPosition(cursor.key));
+    this.add(cube);
+  }
   private async mountCubeDB() {
     Utils.initDataBase({
       dbName: Constants.IndexedDBName,
@@ -54,11 +59,6 @@ class engine {
         func: this.mountCube.bind(this)
       })
     })
-  }
-  private mountCube(cursor: { key: string, cube: Cube }) {
-    const cube = new Cube();
-    cube.position.copy(Utils.getPosition(cursor.key));
-    this.add(cube);
   }
   add(target: THREE.Object3D) {
     this.scene.add(target);
