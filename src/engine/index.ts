@@ -17,7 +17,7 @@ class engine {
   private renderer: THREE.Renderer;
   private state: IState;
   private overCube: THREE.Mesh;
-  private indexedDB: IDBDatabase;
+  private cubeDB: IDBDatabase;
   ground: THREE.Mesh;
   grid: THREE.GridHelper;
   constructor({
@@ -32,14 +32,14 @@ class engine {
       isShiftDown: false
     }
     this.mountOverCube();
-    this.mountIndexedDB();
+    this.mountCubeDB();
   }
   private mountOverCube() {
     const cube = new Cube({ color: 0xff0000, opacity: 0.5, transparent: true });
     this.overCube = cube;
     this.add(cube);
   }
-  private async mountIndexedDB() {
+  private async mountCubeDB() {
     Utils.initDataBase({
       dbName: Constants.IndexedDBName,
       dbVersion: Constants.IndexedDBVersion,
@@ -47,9 +47,9 @@ class engine {
       osKey: Constants.IndexedDBObjectStoreKey
     }).then((event) => {
       ///@ts-ignore
-      this.indexedDB = event.target.result;
+      this.cubeDB = event.target.result;
       Utils.read({
-        db: this.indexedDB,
+        db: this.cubeDB,
         name: Constants.IndexedDBObjectStoreName,
         func: this.mountCube.bind(this)
       })
@@ -92,7 +92,7 @@ class engine {
     });
     this.add(cube);
     Utils.write({
-      db: this.indexedDB,
+      db: this.cubeDB,
       name: Constants.IndexedDBObjectStoreName,
       obj: {
         key: Utils.getKey(cube.position),
@@ -105,7 +105,7 @@ class engine {
     if (object !== this.ground && object !== this.grid && object instanceof THREE.Mesh) {
       this.remove(object);
       Utils.remove({
-        db: this.indexedDB,
+        db: this.cubeDB,
         name: Constants.IndexedDBObjectStoreName,
         obj: {
           key: Utils.getKey(object.position),
