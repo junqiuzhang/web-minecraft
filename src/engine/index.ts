@@ -1,7 +1,7 @@
 import * as THREE from 'three';
-import Cube from '../geometry/cube';
 import * as Constants from '../constant';
 import * as Utils from '../utils';
+import Cube from '../geometry/cube';
 type Direction = 'up' | 'down' | 'left' | 'right';
 interface IEngine {
   scene: THREE.Scene;
