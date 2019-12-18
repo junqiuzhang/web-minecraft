@@ -9,6 +9,7 @@ interface IEngine {
   renderer: THREE.Renderer;
 }
 interface IState {
+  color: number;
   isShiftDown: boolean;
 }
 class engine {
@@ -29,13 +30,14 @@ class engine {
     this.camera = camera;
     this.renderer = renderer;
     this.state = {
+      color: 0x00ff00,
       isShiftDown: false
     }
     this.mountOverCube();
     this.mountCubeDB();
   }
   private mountOverCube() {
-    const cube = new Cube({ color: 0xff0000, opacity: 0.5, transparent: true });
+    const cube = new Cube({ color: 0x00ff00, opacity: 0.5, transparent: true });
     this.overCube = cube;
     this.add(cube);
   }
