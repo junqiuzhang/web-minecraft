@@ -19,11 +19,12 @@ Minecraft on the web platform, that based on `Three.js`.
 - Press WASD key or Arrow key to move position
 - Press Space to jump
 ## Todos
-- [x] remove object
+- [x] add cube
+- [x] remove cube
 - [x] impact checking
 - [x] gravity
 - [x] jump
 - [x] persistence
 - [ ] more material
-- [ ] light changed for time
+- [ ] light changed
 - [ ] ground and water
