@@ -7,3 +7,9 @@ export interface ICommonParam {
   renderer: THREE.Renderer;
   engine: Engine;
 }
+export interface ICamera extends THREE.Camera {
+  [key: string]: any;
+}
+export interface IEventTarget extends EventTarget {
+  [key: string]: any;
+}

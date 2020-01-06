@@ -1,8 +1,10 @@
 import * as THREE from 'three';
 import * as Constants from '../constant';
 import * as Utils from '../utils';
+import * as Interface from '../interface';
 import Cube from '../geometry/cube';
 type Direction = 'up' | 'down' | 'left' | 'right';
+
 interface IEngine {
   scene: THREE.Scene;
   camera: THREE.Camera;
@@ -14,7 +16,7 @@ interface IState {
 }
 class engine {
   private scene: THREE.Scene;
-  private camera: THREE.Camera;
+  private camera: Interface.ICamera;
   private renderer: THREE.Renderer;
   private state: IState;
   private overCube: THREE.Mesh;
@@ -52,9 +54,8 @@ class engine {
       dbVersion: Constants.IndexedDBVersion,
       osName: Constants.IndexedDBObjectStoreName,
       osKey: Constants.IndexedDBObjectStoreKey
-    }).then((event) => {
-      ///@ts-ignore
-      this.cubeDB = event.target.result;
+    }).then(({ target }: { target: Interface.IEventTarget }) => {
+      this.cubeDB = target.result;
       Utils.read({
         db: this.cubeDB,
         name: Constants.IndexedDBObjectStoreName,
@@ -180,9 +181,7 @@ class engine {
     this.state.isShiftDown = isShiftDown;
   }
   onWindowResize() {
-    /// @ts-ignore
     this.camera.aspect = window.innerWidth / window.innerHeight;
-    /// @ts-ignore
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight);
   }
