@@ -179,5 +179,12 @@ class engine {
   onShiftChange(isShiftDown: boolean) {
     this.state.isShiftDown = isShiftDown;
   }
+  onWindowResize() {
+    /// @ts-ignore
+    this.camera.aspect = window.innerWidth / window.innerHeight;
+    /// @ts-ignore
+    this.camera.updateProjectionMatrix();
+    this.renderer.setSize(window.innerWidth, window.innerHeight);
+  }
 }
 export default engine;
