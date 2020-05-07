@@ -93,24 +93,19 @@ export function put({
 }
 export function read({
   db,
-  name,
-  func
+  name
 }: {
   db: IDBDatabase,
-  name: string,
-  func: Function
-}) {
+  name: string
+}): Promise<Event> {
   const request = db.transaction(name)
     .objectStore(name)
     .openCursor();
-  request.onsuccess = function (event) {
-    ///@ts-ignore
-    const cursor = event.target.result;
-    if (cursor) {
-      func(cursor);
-      cursor.continue();
-    }
-  };
+  return new Promise((resolve, reject) => {
+    request.onsuccess = function (event) {
+      resolve(event)
+    };
+  })
 }
 export function write(param: {
   db: IDBDatabase,

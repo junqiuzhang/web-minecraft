@@ -58,8 +58,14 @@ class engine {
       this.cubeDB = target.result;
       Utils.read({
         db: this.cubeDB,
-        name: Constants.IndexedDBObjectStoreName,
-        func: this.mountCube.bind(this)
+        name: Constants.IndexedDBObjectStoreName
+      }).then((event) => {
+        /// @ts-ignore
+        const cursor = event.target.result;
+        if (cursor) {
+          this.mountCube(cursor);
+          cursor.continue();
+        }
       })
     })
   }
