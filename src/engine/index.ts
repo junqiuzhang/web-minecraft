@@ -3,34 +3,20 @@ import * as Constants from '../constant';
 import * as Utils from '../utils';
 import * as Interface from '../interface';
 import Cube from '../geometry/cube';
-type Direction = 'up' | 'down' | 'left' | 'right';
+import MoveEngine from './move';
 
-interface IEngine {
-  scene: THREE.Scene;
-  camera: THREE.Camera;
-  renderer: THREE.Renderer;
-}
-interface IState {
-  color: number;
-  isShiftDown: boolean;
-}
-class engine {
-  private scene: THREE.Scene;
-  private camera: Interface.ICamera;
-  private renderer: THREE.Renderer;
-  private state: IState;
-  private overCube: THREE.Mesh;
-  private cubeDB: IDBDatabase;
-  ground: THREE.Mesh;
-  grid: THREE.GridHelper;
+class CubeEngine extends MoveEngine {
+  protected cubeDB: IDBDatabase;
   constructor({
     scene,
     camera,
     renderer
-  }: IEngine) {
-    this.scene = scene;
-    this.camera = camera;
-    this.renderer = renderer;
+  }: Interface.IEngine) {
+    super({
+      scene,
+      camera,
+      renderer
+    });
     this.state = {
       color: 0x00ff00,
       isShiftDown: false
@@ -38,17 +24,17 @@ class engine {
     this.mountOverCube();
     this.mountCubeDB();
   }
-  private mountOverCube() {
+  protected mountOverCube() {
     const cube = new Cube({ color: 0x00ff00, opacity: 0.5, transparent: true });
     this.overCube = cube;
     this.add(cube);
   }
-  private mountCube(cursor: { key: string, cube: Cube }) {
+  protected mountCube(cursor: { key: string, cube: Cube }) {
     const cube = new Cube();
     cube.position.copy(Utils.getPosition(cursor.key));
     this.add(cube);
   }
-  private async mountCubeDB() {
+  protected async mountCubeDB() {
     Utils.initDataBase({
       dbName: Constants.IndexedDBName,
       dbVersion: Constants.IndexedDBVersion,
@@ -134,62 +120,8 @@ class engine {
       this.overCube.position.copy(point.floor().addScalar(0.5));
     }
   }
-  private isCameraCrashed(): boolean {
-    const objects = Utils.filter(this.scene.children, [this.overCube, this.ground, this.grid]);
-    const direction = this.camera.getWorldDirection(new THREE.Vector3());
-    const crashDistance = Constants.StepLength;
-    return Utils.isCrashed({
-      objects,
-      direction,
-      crashDistance,
-      position: this.camera.position,
-    }) || Utils.isCrashed({
-      objects,
-      direction,
-      crashDistance,
-      position: new THREE.Vector3(this.camera.position.x, this.camera.position.y - 1, this.camera.position.z),
-    })
-  }
-  onMove(type: Direction) {
-    const isCrash = this.isCameraCrashed();
-    if (isCrash) return;
-    if (type === 'up') {
-      this.camera.translateZ(-Constants.StepLength);
-    } else if (type === 'down') {
-      this.camera.translateZ(Constants.StepLength);
-    } else if (type === 'left') {
-      this.camera.translateX(-Constants.StepLength);
-    } else if (type === 'right') {
-      this.camera.translateX(Constants.StepLength);
-    }
-    Utils.fall({
-      target: this.camera, 
-      objects: this.scene.children, 
-      crashDistance: 1.5
-    });
-  }
-  onJump() {
-    const target = this.camera;
-    const objects = this.scene.children
-    Utils.jump({
-      target, 
-      objects, 
-      crashDistance: 0.5
-    }).then(() => {
-      Utils.fall({
-        target: this.camera, 
-        objects: this.scene.children, 
-        crashDistance: 1.5
-      });
-    })
-  }
   onShiftChange(isShiftDown: boolean) {
     this.state.isShiftDown = isShiftDown;
   }
-  onWindowResize() {
-    this.camera.aspect = window.innerWidth / window.innerHeight;
-    this.camera.updateProjectionMatrix();
-    this.renderer.setSize(window.innerWidth, window.innerHeight);
-  }
 }
-export default engine;
+export default CubeEngine;

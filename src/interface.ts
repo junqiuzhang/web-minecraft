@@ -13,3 +13,11 @@ export interface ICamera extends THREE.Camera {
 export interface IEventTarget extends EventTarget {
   [key: string]: any;
 }
+export interface IEngine {
+  scene: THREE.Scene;
+  camera: THREE.Camera;
+  renderer: THREE.Renderer;
+}
+export interface IState {
+  [key: string]: any
+}

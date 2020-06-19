@@ -22,7 +22,7 @@ Minecraft on the web platform, that based on `Three.js`.
 - [x] add cube
 - [x] remove cube
 - [x] impact checking
-- [x] gravity
+- [x] move
 - [x] jump
 - [x] persistence
 - [ ] more material
