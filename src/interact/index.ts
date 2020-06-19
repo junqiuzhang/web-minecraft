@@ -5,6 +5,7 @@ import bindMove from './bind-move';
 import bindShift from './bind-shift';
 import bindJump from './bind-jump';
 import bindResize from './bind-resize';
+import bindNumber from './bind-number';
 import { ICommonParam } from '../interface';
 export interface IInteract extends ICommonParam {}
 const bindEnum = {
@@ -15,6 +16,7 @@ const bindEnum = {
   bindShift,
   bindJump,
   bindResize,
+  bindNumber
 }
 function interact({
   scene,

@@ -25,7 +25,7 @@ class CubeEngine extends MoveEngine {
     this.mountCubeDB();
   }
   protected mountOverCube() {
-    const cube = new Cube({ color: 0x00ff00, opacity: 0.5, transparent: true });
+    const cube = new Cube({ color: 0x000000, opacity: 0.3, transparent: true });
     this.overCube = cube;
     this.add(cube);
   }
@@ -72,8 +72,9 @@ class CubeEngine extends MoveEngine {
     }
   }
   onCreate(intersect: THREE.Intersection) {
+    const { color } = this.state;
     const { point, face } = intersect;
-    const cube = new Cube();
+    const cube = new Cube({ color });
     if (face instanceof THREE.Face3) {
       cube.position.copy(point).add(face.normal.divideScalar(2));
       cube.position.floor().addScalar(0.5);
@@ -124,6 +125,12 @@ class CubeEngine extends MoveEngine {
     this.setState({
       isShiftDown
     });
+  }
+  onPressNumber(key: number) {
+    const colorArray = [0x000000, 0x000080, 0x008000, 0xc0c0c0, 0x0000ff, 0x00ff00, 0x00ffff, 0xff0000, 0xff00ff, 0xffffff]
+    this.setState({
+      color: colorArray[key]
+    })
   }
 }
 export default CubeEngine;
