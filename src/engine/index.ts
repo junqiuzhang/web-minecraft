@@ -121,7 +121,9 @@ class CubeEngine extends MoveEngine {
     }
   }
   onShiftChange(isShiftDown: boolean) {
-    this.state.isShiftDown = isShiftDown;
+    this.setState({
+      isShiftDown
+    });
   }
 }
 export default CubeEngine;
