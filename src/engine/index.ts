@@ -17,10 +17,10 @@ class CubeEngine extends MoveEngine {
       camera,
       renderer
     });
-    this.state = {
+    this.setState({
       color: 0x00ff00,
       isShiftDown: false
-    }
+    })
     this.mountOverCube();
     this.mountCubeDB();
   }

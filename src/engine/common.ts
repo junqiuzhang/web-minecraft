@@ -16,6 +16,12 @@ class CommonEngine {
     this.renderer = renderer;
     this.state = {}
   }
+  setState(state: Object) {
+    this.state = {
+      ...this.state,
+      ...state
+    }
+  }
   onWindowResize() {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
