@@ -44,13 +44,14 @@ class CubeEngine extends MoveEngine {
       this.cubeDB = target.result;
       Utils.read({
         db: this.cubeDB,
-        name: Constants.IndexedDBObjectStoreName
-      }).then((event) => {
-        /// @ts-ignore
-        const cursor = event.target.result;
-        if (cursor) {
-          this.mountCube(cursor);
-          cursor.continue();
+        name: Constants.IndexedDBObjectStoreName,
+        callback: (event) => {
+          /// @ts-ignore
+          const cursor = event.target.result;
+          if (cursor) {
+            this.mountCube(cursor);
+            cursor.continue();
+          }
         }
       })
     })
