@@ -18,6 +18,7 @@ Minecraft on the web platform, that based on `Three.js`.
 - Click with shift down to remove the cube
 - Press WASD key or Arrow key to move position
 - Press Space to jump
+- Press Number to change cube color
 ## Todos
 - [x] add cube
 - [x] remove cube
