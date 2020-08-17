@@ -106,24 +106,13 @@ export function read({
   const request = db.transaction(name).objectStore(name).openCursor();
   request.onsuccess = callback;
 }
-export function write(param: {
-  db: IDBDatabase;
-  name: string;
-  obj: any;
-}): Promise<boolean> {
-  return get(param)
+export function write(param: { db: IDBDatabase; name: string; obj: any }) {
+  get(param)
     .then(event => {
       if (event.type === 'success') {
         return put(param);
       } else {
         return add(param);
-      }
-    })
-    .then(event => {
-      if (event.type === 'success') {
-        return true;
-      } else {
-        return false;
       }
     });
 }
