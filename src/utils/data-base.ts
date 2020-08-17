@@ -6,7 +6,7 @@ export function subscribe(request: IDBRequest): Promise<Event> {
     };
     request.onerror = function (event) {
       reject(event);
-    }
+    };
   });
 }
 export function initDataBase({
@@ -15,10 +15,10 @@ export function initDataBase({
   osName,
   osKey
 }: {
-  dbName: string,
-  dbVersion: number,
-  osName: string,
-  osKey: string
+  dbName: string;
+  dbVersion: number;
+  osName: string;
+  osKey: string;
 }): Promise<Event> {
   return new Promise((resolve, reject) => {
     const request = window.indexedDB.open(dbName, dbVersion);
@@ -40,11 +40,12 @@ export function add({
   name,
   obj
 }: {
-  db: IDBDatabase,
-  name: string,
-  obj: any
+  db: IDBDatabase;
+  name: string;
+  obj: any;
 }): Promise<Event> {
-  const request = db.transaction([name], 'readwrite')
+  const request = db
+    .transaction([name], 'readwrite')
     .objectStore(name)
     .add(obj);
   return subscribe(request);
@@ -54,11 +55,12 @@ export function remove({
   name,
   obj
 }: {
-  db: IDBDatabase,
-  name: string,
-  obj: any
+  db: IDBDatabase;
+  name: string;
+  obj: any;
 }): Promise<Event> {
-  const request = db.transaction([name], 'readwrite')
+  const request = db
+    .transaction([name], 'readwrite')
     .objectStore(name)
     .delete(obj.key);
   return subscribe(request);
@@ -68,9 +70,9 @@ export function get({
   name,
   obj
 }: {
-  db: IDBDatabase,
-  name: string,
-  obj: any
+  db: IDBDatabase;
+  name: string;
+  obj: any;
 }): Promise<Event> {
   const transaction = db.transaction([name]);
   const objectStore = transaction.objectStore(name);
@@ -82,56 +84,57 @@ export function put({
   name,
   obj
 }: {
-  db: IDBDatabase,
-  name: string,
-  obj: any
+  db: IDBDatabase;
+  name: string;
+  obj: any;
 }): Promise<Event> {
-  const request = db.transaction([name], 'readwrite')
+  const request = db
+    .transaction([name], 'readwrite')
     .objectStore(name)
     .put(obj);
   return subscribe(request);
 }
 export function read({
   db,
-  name
+  name,
+  callback
 }: {
-  db: IDBDatabase,
-  name: string
-  }): { then: (fn: (this: IDBRequest<IDBCursorWithValue>, ev: Event) => any) => void } {
-  const request = db.transaction(name)
-    .objectStore(name)
-    .openCursor();
-  return {
-    then: (fn) => {
-      request.onsuccess = fn
-    }
-  }
+  db: IDBDatabase;
+  name: string;
+  callback: (this: IDBRequest<IDBCursorWithValue>, ev: Event) => any;
+}) {
+  const request = db.transaction(name).objectStore(name).openCursor();
+  request.onsuccess = callback;
 }
 export function write(param: {
-  db: IDBDatabase,
-  name: string,
-  obj: any
+  db: IDBDatabase;
+  name: string;
+  obj: any;
 }): Promise<boolean> {
   return get(param)
-    .then((event) => {
+    .then(event => {
       if (event.type === 'success') {
         return put(param);
       } else {
         return add(param);
       }
     })
-    .then((event) => {
+    .then(event => {
       if (event.type === 'success') {
         return true;
       } else {
         return false;
       }
-    })
+    });
 }
 export function getKey(position: THREE.Vector3): string {
   return `${position.x},${position.y},${position.z}`;
 }
 export function getPosition(str: string): THREE.Vector3 {
   const strArr = str.split(',');
-  return new THREE.Vector3(Number(strArr[0]), Number(strArr[1]), Number(strArr[2]));
+  return new THREE.Vector3(
+    Number(strArr[0]),
+    Number(strArr[1]),
+    Number(strArr[2])
+  );
 }
