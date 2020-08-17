@@ -128,7 +128,7 @@ class CubeEngine extends MoveEngine {
     });
   }
   onPressNumber(key: number) {
-    const colorArray = [0x000000, 0x000080, 0x008000, 0xc0c0c0, 0x0000ff, 0x00ff00, 0x00ffff, 0xff0000, 0xff00ff, 0xffffff]
+    const colorArray = [0x000000, 0x000080, 0x008000, 0x800000, 0x0000ff, 0x00ff00, 0xff0000, 0x00ffff, 0xff00ff, 0xffff00]
     this.setState({
       color: colorArray[key]
     })
