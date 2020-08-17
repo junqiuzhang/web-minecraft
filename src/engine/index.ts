@@ -45,7 +45,7 @@ class CubeEngine extends MoveEngine {
       Utils.read({
         db: this.cubeDB,
         name: Constants.IndexedDBObjectStoreName,
-        callback: (event) => {
+        callback: (event) => { // fix Promise bug
           /// @ts-ignore
           const cursor = event.target.result;
           if (cursor) {
