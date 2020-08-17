@@ -22,12 +22,7 @@ export function initDataBase({
 }): Promise<Event> {
   return new Promise((resolve, reject) => {
     const request = window.indexedDB.open(dbName, dbVersion);
-    request.onsuccess = function (event) {
-      resolve(event);
-    };
-    request.onerror = function (event) {
-      reject(event);
-    };
+    subscribe(request);
     request.onupgradeneeded = function (event) {
       ///@ts-ignore
       event.target.result.createObjectStore(osName, { keyPath: osKey });
@@ -105,6 +100,7 @@ export function read({
 }) {
   const request = db.transaction(name).objectStore(name).openCursor();
   request.onsuccess = callback;
+  request.onerror = console.log;
 }
 export function write(param: { db: IDBDatabase; name: string; obj: any }) {
   get(param)
