@@ -97,15 +97,15 @@ export function read({
 }: {
   db: IDBDatabase,
   name: string
-}): Promise<Event> {
+  }): { then: (fn: (this: IDBRequest<IDBCursorWithValue>, ev: Event) => any) => void } {
   const request = db.transaction(name)
     .objectStore(name)
     .openCursor();
-  return new Promise((resolve, reject) => {
-    request.onsuccess = function (event) {
-      resolve(event)
-    };
-  })
+  return {
+    then: (fn) => {
+      request.onsuccess = fn
+    }
+  }
 }
 export function write(param: {
   db: IDBDatabase,
