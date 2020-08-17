@@ -7,8 +7,8 @@ function renderLoop({
   renderer
 }: IRender) {
   function render() {
-    requestAnimationFrame(render);
     renderer.render(scene, camera);
+    requestAnimationFrame(render);
   }
   render();
 }
