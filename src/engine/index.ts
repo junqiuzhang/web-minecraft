@@ -30,7 +30,8 @@ class CubeEngine extends MoveEngine {
     this.add(cube);
   }
   protected mountCube(cursor: { key: string, cube: Cube }) {
-    const cube = new Cube();
+    /// @ts-ignore
+    const cube = new Cube({ color: parseInt(cursor.value.color) });
     cube.position.copy(Utils.getPosition(cursor.key));
     this.add(cube);
   }
@@ -93,7 +94,9 @@ class CubeEngine extends MoveEngine {
       name: Constants.IndexedDBObjectStoreName,
       obj: {
         key: Utils.getKey(cube.position),
-        cube: Utils.cloneProperties(cube)
+        cube: Utils.cloneProperties(cube),
+        /// @ts-ignore
+        color
       }
     })
   }
