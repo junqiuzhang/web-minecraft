@@ -10,7 +10,6 @@ module.exports = {
     host: '0.0.0.0',
     port: 3000,
     hot: true,
-    compress: true,
     disableHostCheck: true,
   },
   module: {
@@ -55,7 +54,6 @@ module.exports = {
   ],
   stats: {
     all: false,
-    builtAt: false,
     errors: true,
     errorDetails: true,
     timings: true
@@ -65,8 +63,4 @@ module.exports = {
     unsafeCache: true,
   },
   mode: 'development', 
-  // mode: 'production',
-  node: {
-    fs: 'empty'
-  }
 }
