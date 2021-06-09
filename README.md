@@ -28,5 +28,6 @@ Minecraft on the web platform, that based on `Three.js`.
 - [x] persistence
 - [x] more material
 - [ ] map generation
-- [ ] light changed
+- [ ] cube checklist
 - [ ] ground and water
+- [ ] light changed
