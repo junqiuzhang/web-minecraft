@@ -36,6 +36,6 @@
   },
   "homepage": "https://github.com/junqiuzhang/web-minecraft#readme",
   "dependencies": {
-    "three": "^0.111.0"
+    "three": "^0.137.0"
   }
 }
